@@ -206,8 +206,8 @@ class TrackersViewController: UIViewController {
     // MARK: - Метод, вызываемый при нажатии на "+"
     @objc
     private func plusTapped() {
-//        let selecterTrackerVC = SelectingTrackerViewController()
-//        show(selecterTrackerVC, sender: self)
+        let selecterTrackerVC = TrackerTypeViewController()
+        show(selecterTrackerVC, sender: self)
     }
     
     // MARK: - Метод, добавляющий коллекцию трекеров на экран и убирающий заглушку

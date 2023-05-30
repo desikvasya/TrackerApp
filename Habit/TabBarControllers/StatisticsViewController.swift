@@ -10,8 +10,7 @@ import UIKit
 final class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Статистика"
-        
+        setupNavBar()
         addPlaceholder()
     }
     
@@ -39,6 +38,10 @@ final class StatisticsViewController: UIViewController {
             placeholderView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             placeholderView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor)
         ])
+    }
+    
+    private func setupNavBar() {
+        title = "Статистика"
     }
 }
 
