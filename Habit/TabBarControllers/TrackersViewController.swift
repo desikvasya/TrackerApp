@@ -25,7 +25,7 @@ class TrackersViewController: UIViewController {
     var trackersCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
-        collection.register(TrackersCell.self, forCellWithReuseIdentifier: "trackers")
+        collection.register(TrackerCell.self, forCellWithReuseIdentifier: "trackers")
         collection.register(CollectionHeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collection.showsVerticalScrollIndicator = false
         let layout: UICollectionViewFlowLayout = {
@@ -241,7 +241,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     
     // MARK: Метод создания и настройки ячейки для indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackers", for: indexPath) as? TrackersCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackers", for: indexPath) as? TrackerCell
         cell?.delegate = self
         cell?.viewBackground.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color
         cell?.emoji.text = localTrackers[indexPath.section].trackers[indexPath.row].emoji

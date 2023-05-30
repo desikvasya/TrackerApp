@@ -38,7 +38,7 @@ let colorCollectionData = [
 
 // MARK: - Массив с категориями, используемыми в приложении
 var categories = [
-    "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
+    "Важное", "Домашний уют", "Работа", "Учёба", "Спорт"
 ]
 
 // MARK: - Переменная, хранящая выбранную пользователем категорию события
@@ -46,13 +46,13 @@ var categoryName = ""
 
 // MARK: - Перечисление с днями недели
 enum dayOfWeek: String {
-    case monday = "понедельник"
-    case tuesday = "вторник"
-    case wednesday = "среда"
-    case thursday = "четверг"
-    case friday = "пятница"
-    case saturday = "суббота"
-    case sunday = "воскресенье"
+    case monday = "Понедельник"
+    case tuesday = "Вторник"
+    case wednesday = "Среда"
+    case thursday = "Четверг"
+    case friday = "Пятница"
+    case saturday = "Суббота"
+    case sunday = "Воскресенье"
 }
 
 // MARK: - Массив дней недели

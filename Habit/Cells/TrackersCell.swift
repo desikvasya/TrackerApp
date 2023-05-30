@@ -1,5 +1,5 @@
 //
-//  TrackerCell.swift
+//  TrackersCell.swift
 //  Habit
 //
 //  Created by Denis on 30.05.2023.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class TrackerCell: UICollectionViewCell {
+final class TrackersCell: UICollectionViewCell {
     
     // MARK: - Свойства
     var delegate: TrackersViewControllerProtocol?
@@ -65,10 +65,26 @@ final class TrackerCell: UICollectionViewCell {
         return button
     }()
     
+    var checkboxButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
+        button.layer.cornerRadius = button.bounds.size.width / 2
+        button.layer.masksToBounds = true
+        let image = UIImage(systemName: "checkmark")
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = .white
+        imageView.contentMode = .center
+        imageView.clipsToBounds = true
+        imageView.frame = button.bounds
+        button.addSubview(imageView)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Инициализатор
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //delegate = TrackersViewController()
+        delegate = TrackersViewController()
         setupView()
     }
     
@@ -118,5 +134,16 @@ final class TrackerCell: UICollectionViewCell {
         var tappedID = (delegate?.localTrackers[indexPath.section].trackers[indexPath.row].id)!
         delegate?.saveDoneEvent(id: tappedID, index: indexPath)
         collectionView.reloadData()
+        let colorOfButton = plusButton.backgroundColor
+        plusButton.removeFromSuperview()
+        checkboxButton.backgroundColor = colorOfButton
+        checkboxButton.alpha = 0.5
+        contentView.addSubview(checkboxButton)
+        NSLayoutConstraint.activate([
+            checkboxButton.topAnchor.constraint(equalTo: viewBackground.bottomAnchor, constant: 8),
+            checkboxButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            checkboxButton.heightAnchor.constraint(equalToConstant: 34),
+            checkboxButton.widthAnchor.constraint(equalToConstant: 34),
+        ])
     }
 }
