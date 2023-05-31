@@ -8,6 +8,8 @@
 import UIKit
 
 final class StatisticsViewController: UIViewController {
+    private var containerView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavBar()
@@ -41,7 +43,30 @@ final class StatisticsViewController: UIViewController {
     }
     
     private func setupNavBar() {
-        title = "Статистика"
+        if let navigationBar = navigationController?.navigationBar {
+            var attributes = navigationBar.titleTextAttributes ?? [:]
+            let boldFont = UIFont.boldSystemFont(ofSize: 34)
+            attributes[NSAttributedString.Key.font] = boldFont
+            navigationBar.titleTextAttributes = attributes
+            
+            let titleLabel = UILabel()
+            titleLabel.text = "Статистика"
+            titleLabel.font = boldFont
+            titleLabel.sizeToFit()
+            
+            let containerView = UIView()
+            containerView.addSubview(titleLabel)
+            
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 28)
+            ])
+            
+            let leftBarItem = UIBarButtonItem(customView: containerView)
+            navigationItem.leftBarButtonItem = leftBarItem
+        }
     }
 }
 
