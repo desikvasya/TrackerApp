@@ -68,7 +68,6 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Инициализатор
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //delegate = TrackersViewController()
         setupView()
     }
     
@@ -112,10 +111,10 @@ final class TrackerCell: UICollectionViewCell {
     @objc
     private func plusTapped() {
         guard let collectionView = superview as? UICollectionView,
-              let indexPath = collectionView.indexPath(for: self) else {
+              let indexPath = collectionView.indexPath(for: self),
+              let tappedID = delegate?.localTrackers[indexPath.section].trackers[indexPath.row].id else {
             return
         }
-        var tappedID = (delegate?.localTrackers[indexPath.section].trackers[indexPath.row].id)!
         delegate?.saveDoneEvent(id: tappedID, index: indexPath)
         collectionView.reloadData()
     }

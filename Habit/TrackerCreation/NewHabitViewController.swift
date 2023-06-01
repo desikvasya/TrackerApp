@@ -214,7 +214,7 @@ final class NewHabitViewController: UIViewController {
         categoryName = ""
         selectedDays = []
         shortSelectedDays = []
-        dismiss(animated: true)
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     // MARK: Метод, меняющий первую строку таблицы ("категория") при срабатывании нотификации
@@ -233,15 +233,16 @@ final class NewHabitViewController: UIViewController {
     
     @objc
     private func changeSchedule() {
-        let cell = categoriesTable.cellForRow(at: [0,1]) as? HabitCategoryCell
-        cell?.title.removeFromSuperview()
-        cell?.addSubview(cell!.title)
-        cell?.categoryName.text = shortSelectedDays.joined(separator: ", ")
-        cell?.categoryName.topAnchor.constraint(equalTo: cell!.title.bottomAnchor, constant: 2).isActive = true
-        cell?.categoryName.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true
-        cell?.title.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true
-        cell?.title.topAnchor.constraint(equalTo: cell!.topAnchor, constant: 15).isActive = true
-        activateButton()
+        if let cell = categoriesTable.cellForRow(at: [0,1]) as? HabitCategoryCell {
+            cell.title.removeFromSuperview()
+            cell.addSubview(cell.title)
+            cell.categoryName.text = shortSelectedDays.joined(separator: ", ")
+            cell.categoryName.topAnchor.constraint(equalTo: cell.title.bottomAnchor, constant: 2).isActive = true
+            cell.categoryName.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 16).isActive = true
+            cell.title.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 16).isActive = true
+            cell.title.topAnchor.constraint(equalTo: cell.topAnchor, constant: 15).isActive = true
+            activateButton()
+        }
     }
     
     // MARK: Метод, прячущий клавиатуру при нажатии вне её области

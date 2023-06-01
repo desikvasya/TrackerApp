@@ -260,11 +260,13 @@ extension TrackersViewController: UICollectionViewDataSource {
     
     // MARK: Метод создания и настройки Supplementary View
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
+            let defaultHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "defaultHeader", for: indexPath)
+            return defaultHeader
+        }
         header.title.text = localTrackers[indexPath.section].label
         return header
     }
-    
 }
 
 // MARK: - Расширение для UICollectionViewDelegateFlowLayout

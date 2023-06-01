@@ -167,6 +167,7 @@ extension CategorySelectionViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
         cell?.checkbox.image = UIImage(systemName: "checkmark")
+        
         dismiss(animated: true) {
             categoryName = cell?.title.text ?? ""
             let notification = Notification(name: Notification.Name("category_changed"))
