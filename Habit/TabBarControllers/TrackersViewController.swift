@@ -12,7 +12,6 @@ protocol TrackersViewControllerProtocol {
     var localTrackers: [TrackerCategory] {get set }
 }
 
-/// Экран "Трекеры" в таб-баре
 class TrackersViewController: UIViewController {
     
     // MARK: - Свойства
@@ -160,24 +159,20 @@ class TrackersViewController: UIViewController {
     
     //Метод, обновляющий коллекцию в соответствии с выбранным днём
     private func updateCollection() {
-        var newEvents: [Event] = []
-        var newCategory: String = ""
         var newTrackers: [TrackerCategory] = []
         localTrackers = []
-        var isGood = false
-        for tracker in trackers { // категория
-            newCategory = tracker.label
-            for event in tracker.trackers { // трекер
-                if event.day?.contains(choosenDay) ?? false || event.day == nil {
+
+        for tracker in trackers {
+            let newCategory = tracker.label
+            var newEvents: [Event] = []
+
+            for event in tracker.trackers {
+                if event.day?.contains(choosenDay) ?? true {
                     newEvents.append(event)
-                    isGood = true
                 }
             }
-            if isGood {
+            if !newCategory.isEmpty {
                 newTrackers.append(TrackerCategory(label: newCategory, trackers: newEvents))
-                newEvents = []
-                isGood = false
-                newCategory = ""
             }
         }
         localTrackers = newTrackers
@@ -345,7 +340,6 @@ extension TrackersViewController: TrackersViewControllerProtocol {
         }
         trackersCollection.reloadData()
     }
-    
 }
 
 // MARK: - Расширение, упрощающее работу с DatePicker
