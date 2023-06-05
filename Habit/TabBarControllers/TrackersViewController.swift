@@ -159,20 +159,24 @@ class TrackersViewController: UIViewController {
     
     //Метод, обновляющий коллекцию в соответствии с выбранным днём
     private func updateCollection() {
+        var newEvents: [Event] = []
+        var newCategory: String = ""
         var newTrackers: [TrackerCategory] = []
         localTrackers = []
-
-        for tracker in trackers {
-            let newCategory = tracker.label
-            var newEvents: [Event] = []
-
-            for event in tracker.trackers {
-                if event.day?.contains(choosenDay) ?? true {
+        var isGood = false
+        for tracker in trackers { // категория
+            newCategory = tracker.label
+            for event in tracker.trackers { // трекер
+                if event.day?.contains(choosenDay) ?? false || event.day == nil {
                     newEvents.append(event)
+                    isGood = true
                 }
             }
-            if !newCategory.isEmpty {
+            if isGood {
                 newTrackers.append(TrackerCategory(label: newCategory, trackers: newEvents))
+                newEvents = []
+                isGood = false
+                newCategory = ""
             }
         }
         localTrackers = newTrackers
@@ -338,8 +342,16 @@ extension TrackersViewController: TrackersViewControllerProtocol {
         } else {
             trackerRecords.append(TrackerRecord(id: id, day: dateString))
         }
+        
+        // Update the quantity label in the TrackerCell
+        if let cell = trackersCollection.cellForItem(at: index) as? TrackerCell {
+            let count = trackerRecords.filter({ $0.id == id }).count
+            cell.quantity.text = "\(count) дней"
+        }
+        
         trackersCollection.reloadData()
     }
+
 }
 
 // MARK: - Расширение, упрощающее работу с DatePicker
@@ -355,6 +367,7 @@ extension TrackersViewController {
         } else if dateFormat == "yyyy/MM/dd" {
             dateString = dateFormatterString
         }
+        choosenDay = dateFormatterString.capitalized
     }
     
 }
