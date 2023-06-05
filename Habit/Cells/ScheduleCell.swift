@@ -56,13 +56,13 @@ final class ScheduleCell: UITableViewCell {
         if switcher.isOn {
             selectedDays.append(title.text ?? "")
             switch title.text {
-            case DayOfWeek.monday.rawValue: shortSelectedDays.append("ПН")
-            case DayOfWeek.tuesday.rawValue: shortSelectedDays.append("ВТ")
-            case DayOfWeek.wednesday.rawValue: shortSelectedDays.append("СР")
-            case DayOfWeek.thursday.rawValue: shortSelectedDays.append("ЧТ")
-            case DayOfWeek.friday.rawValue: shortSelectedDays.append("ПТ")
-            case DayOfWeek.saturday.rawValue: shortSelectedDays.append("СБ")
-            case DayOfWeek.sunday.rawValue: shortSelectedDays.append("ВС")
+            case dayOfWeek.monday.rawValue: shortSelectedDays.append("ПН")
+            case dayOfWeek.tuesday.rawValue: shortSelectedDays.append("ВТ")
+            case dayOfWeek.wednesday.rawValue: shortSelectedDays.append("СР")
+            case dayOfWeek.thursday.rawValue: shortSelectedDays.append("ЧТ")
+            case dayOfWeek.friday.rawValue: shortSelectedDays.append("ПТ")
+            case dayOfWeek.saturday.rawValue: shortSelectedDays.append("СБ")
+            case dayOfWeek.sunday.rawValue: shortSelectedDays.append("ВС")
             case .none:
                 return
             case .some(_):
@@ -74,14 +74,4 @@ final class ScheduleCell: UITableViewCell {
             selectedDays.removeAll { $0 == title.text }
         }
     }
-}
-
-enum DayOfWeek: String {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
 }

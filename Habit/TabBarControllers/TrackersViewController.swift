@@ -226,15 +226,11 @@ class TrackersViewController: UIViewController {
 }
 
 // MARK: - Расширение для UICollectionViewDataSource
-// MARK: - Расширение для UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     
     // MARK: Метод, определяющий количество ячеек в секции коллекции
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section < localTrackers.count {
-            return localTrackers[section].trackers.count
-        }
-        return 0 // or any other value as per your requirement
+        return localTrackers[section].trackers.count
     }
     
     // MARK: Метод, определяющий количество секций в коллекции
@@ -244,48 +240,26 @@ extension TrackersViewController: UICollectionViewDataSource {
     
     // MARK: Метод создания и настройки ячейки для indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard indexPath.section < localTrackers.count else {
-            // Handle out of range scenario for section
-            return UICollectionViewCell()
-        }
-        
-        let trackersInSection = localTrackers[indexPath.section].trackers
-        guard indexPath.row < trackersInSection.count else {
-            // Handle out of range scenario for row
-            return UICollectionViewCell()
-        }
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackers", for: indexPath) as? TrackerCell
         cell?.delegate = self
-        cell?.viewBackground.backgroundColor = trackersInSection[indexPath.row].color
-        cell?.emoji.text = trackersInSection[indexPath.row].emoji
-        cell?.name.text = trackersInSection[indexPath.row].name
-        cell?.plusButton.backgroundColor = trackersInSection[indexPath.row].color
-        
-        let trackerID = trackersInSection[indexPath.row].id
-        let matchingRecords = trackerRecords.filter { $0.id == trackerID }
-        cell?.quantity.text = "\(matchingRecords.count) дней"
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy/MM/dd"
-        let currentDate = Date()
-        let dateString = formatter.string(from: currentDate)
-        
-        if matchingRecords.contains(where: { $0.day == dateString }) {
-            cell?.plusButton.backgroundColor = trackersInSection[indexPath.row].color.withAlphaComponent(0.5)
+        cell?.viewBackground.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color
+        cell?.emoji.text = localTrackers[indexPath.section].trackers[indexPath.row].emoji
+        cell?.name.text = localTrackers[indexPath.section].trackers[indexPath.row].name
+        cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color
+        cell?.quantity.text = "\(trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).count) дней"
+        makeDate(dateFormat: "yyyy/MM/dd")
+        if trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).contains(where: {$0.day == dateString}) {
+            cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color.withAlphaComponent(0.5)
             cell?.plusButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
         } else {
             cell?.plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
         }
-        return cell ?? UICollectionViewCell()
+        return cell!
     }
     
     // MARK: Метод создания и настройки Supplementary View
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
-            let defaultHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "defaultHeader", for: indexPath)
-            return defaultHeader
-        }
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
         header.title.text = localTrackers[indexPath.section].label
         return header
     }
@@ -365,15 +339,9 @@ extension TrackersViewController: TrackersViewControllerProtocol {
         } else {
             trackerRecords.append(TrackerRecord(id: id, day: dateString))
         }
-        
-        // Update the quantity label in the TrackerCell
-        if let cell = trackersCollection.cellForItem(at: index) as? TrackerCell {
-            let count = trackerRecords.filter({ $0.id == id }).count
-            cell.quantity.text = "\(count) дней"
-        }
-        
         trackersCollection.reloadData()
     }
+    
 }
 
 // MARK: - Расширение, упрощающее работу с DatePicker
@@ -389,7 +357,6 @@ extension TrackersViewController {
         } else if dateFormat == "yyyy/MM/dd" {
             dateString = dateFormatterString
         }
-        choosenDay = dateFormatterString.capitalized
     }
     
 }

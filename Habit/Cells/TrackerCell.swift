@@ -108,19 +108,16 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     // MARK: - Метод, вызываемый при нажатии на "+" в ячейке
-    @objc private func plusTapped() {
+    @objc
+    private func plusTapped() {
         guard let collectionView = superview as? UICollectionView,
-              let indexPath = collectionView.indexPath(for: self),
-              let delegate = delegate,
-              indexPath.section < delegate.localTrackers.count,
-              indexPath.row < delegate.localTrackers[indexPath.section].trackers.count else {
+              let indexPath = collectionView.indexPath(for: self) else {
             return
         }
-        
-        let tappedID = delegate.localTrackers[indexPath.section].trackers[indexPath.row].id
-        delegate.saveDoneEvent(id: tappedID, index: indexPath)
+        guard let tappedID = (delegate?.localTrackers[indexPath.section].trackers[indexPath.row].id) else {
+            return
+        }
+        delegate?.saveDoneEvent(id: tappedID, index: indexPath)
         collectionView.reloadData()
     }
-
-    }
-
+}
