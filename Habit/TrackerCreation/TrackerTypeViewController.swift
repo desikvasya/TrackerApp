@@ -74,7 +74,8 @@ final class TrackerTypeViewController: UIViewController {
     }
     
     // MARK: - Методы, вызываемые при нажатии кнопок
-    //MARK: Метод, вызываемый при выборе пользователем "Нерегулярного события"
+    
+    // MARK: Метод, вызываемый при выборе пользователем "Нерегулярного события"
     @objc
     private func irregularTapped() {
         let irregularEventVC = NewIrregularEventViewController()
