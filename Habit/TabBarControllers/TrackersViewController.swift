@@ -277,7 +277,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.frame.width, height: 40)
     }
-    
 }
 
 // MARK: - Расширение для UICollectionViewDelegate
@@ -325,7 +324,6 @@ extension TrackersViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
-    
 }
 
 // MARK: - Расширение для TrackersViewControllerProtocol
@@ -341,7 +339,6 @@ extension TrackersViewController: TrackersViewControllerProtocol {
         }
         trackersCollection.reloadData()
     }
-    
 }
 
 // MARK: - Расширение, упрощающее работу с DatePicker
@@ -358,5 +355,4 @@ extension TrackersViewController {
             dateString = dateFormatterString
         }
     }
-    
 }
