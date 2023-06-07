@@ -8,7 +8,6 @@
 import UIKit
 
 final class NewHabitViewController: UIViewController {
-    
     // MARK: - Свойства
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -116,18 +115,6 @@ final class NewHabitViewController: UIViewController {
     
     // MARK: - Настройка внешнего вида
     private func setupView() {
-        view.backgroundColor = .white
-        firstStack.addArrangedSubview(enterNameTextField)
-        firstStack.addArrangedSubview(categoriesTable)
-        secondStack.addArrangedSubview(cancelButton)
-        secondStack.addArrangedSubview(createButton)
-        scroll.addSubview(firstStack)
-        scroll.addSubview(emojiCollection)
-        scroll.addSubview(colorCollection)
-        scroll.addSubview(secondStack)
-        view.addSubview(titleLabel)
-        view.addSubview(scroll)
-        scroll.contentSize = CGSize(width: view.frame.width, height: 779)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -155,13 +142,6 @@ final class NewHabitViewController: UIViewController {
             secondStack.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
             secondStack.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 24),
         ])
-        categoriesTable.dataSource = self
-        categoriesTable.delegate = self
-        colorCollection.delegate = self
-        colorCollection.dataSource = self
-        emojiCollection.delegate = self
-        emojiCollection.dataSource = self
-        enterNameTextField.delegate = self
     }
     
     // MARK: - Настройка свойств, жестов и нотификаций
@@ -169,9 +149,28 @@ final class NewHabitViewController: UIViewController {
         categoryName = ""
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
-        view.addGestureRecognizer(tapGesture)
         NotificationCenter.default.addObserver(self, selector: #selector(changeFirstCell), name: Notification.Name("category_changed"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeSchedule), name: Notification.Name("schedule_changed"), object: nil)
+        view.backgroundColor = .white
+        firstStack.addArrangedSubview(enterNameTextField)
+        firstStack.addArrangedSubview(categoriesTable)
+        secondStack.addArrangedSubview(cancelButton)
+        secondStack.addArrangedSubview(createButton)
+        scroll.addSubview(firstStack)
+        scroll.addSubview(emojiCollection)
+        scroll.addSubview(colorCollection)
+        scroll.addSubview(secondStack)
+        view.addSubview(titleLabel)
+        view.addSubview(scroll)
+        view.addGestureRecognizer(tapGesture)
+        scroll.contentSize = CGSize(width: view.frame.width, height: 779)
+        categoriesTable.dataSource = self
+        categoriesTable.delegate = self
+        colorCollection.delegate = self
+        colorCollection.dataSource = self
+        emojiCollection.delegate = self
+        emojiCollection.dataSource = self
+        enterNameTextField.delegate = self
     }
     
     private func activateButton() {
@@ -214,7 +213,7 @@ final class NewHabitViewController: UIViewController {
         categoryName = ""
         selectedDays = []
         shortSelectedDays = []
-        dismiss(animated: true)
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     // MARK: Метод, меняющий первую строку таблицы ("категория") при срабатывании нотификации
@@ -340,29 +339,39 @@ extension NewHabitViewController: UICollectionViewDataSource {
     // MARK: Метод создания и настройки ячейки для indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == colorCollection {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell
-            cell?.color.backgroundColor = colorCollectionData[indexPath.row]
-            return cell!
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else {
+                return UICollectionViewCell()
+            }
+            cell.color.backgroundColor = colorCollectionData[indexPath.row]
+            return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell
-            cell?.emojiLabel.text = emojiCollectionData[indexPath.row]
-            return cell!
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else {
+                return UICollectionViewCell()
+            }
+            cell.emojiLabel.text = emojiCollectionData[indexPath.row]
+            return cell
         }
     }
     
     // MARK: Метод создания и настройки Supplementary View
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if collectionView == colorCollection {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
-            header.title.text = "Цвет"
-            return header
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView {
+                header.title.text = "Цвет"
+                return header
+            } else {
+                assertionFailure("Unable to dequeue CollectionHeaderSupplementaryView")
+            }
         } else {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
-            header.title.text = "Emoji"
-            return header
+            if let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView {
+                header.title.text = "Emoji"
+                return header
+            } else {
+                fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+            }
         }
+        return UICollectionReusableView()
     }
-    
 }
 
 // MARK: - Расширение для UICollectionViewDelegateFlowLayout
@@ -420,4 +429,5 @@ extension NewHabitViewController: UICollectionViewDelegate {
             cell?.backgroundColor = UIColor.clear
         }
     }
+    
 }

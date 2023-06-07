@@ -208,7 +208,7 @@ final class NewIrregularEventViewController: UIViewController {
         let notification = Notification(name: Notification.Name("addEvent"))
         NotificationCenter.default.post(notification)
         categoryName = ""
-        dismiss(animated: true)
+        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
     private func activateButton() {
@@ -261,29 +261,36 @@ extension NewIrregularEventViewController: UICollectionViewDataSource {
     // MARK: Метод создания и настройки ячейки для indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == colorCollection {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell
-            cell?.color.backgroundColor = colorCollectionData[indexPath.row]
-            return cell!
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "colorCell", for: indexPath) as? ColorCell else {
+                fatalError("Unable to dequeue ColorCell")
+            }
+            cell.color.backgroundColor = colorCollectionData[indexPath.row]
+            return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell
-            cell?.emojiLabel.text = emojiCollectionData[indexPath.row]
-            return cell!
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else {
+                fatalError("Unable to dequeue EmojiCell")
+            }
+            cell.emojiLabel.text = emojiCollectionData[indexPath.row]
+            return cell
         }
     }
     
     // MARK: Метод создания и настройки Supplementary View
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if collectionView == colorCollection {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
+                fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+            }
             header.title.text = "Цвет"
             return header
         } else {
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! CollectionHeaderSupplementaryView
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
+                fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+            }
             header.title.text = "Emoji"
             return header
         }
     }
-    
 }
 
 // MARK: - Расширение для UICollectionViewDelegateFlowLayout

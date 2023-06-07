@@ -6,7 +6,6 @@
 //
 
 import UIKit
-// Файл, в котором хранятся основные данные для работы приложения
 
 // MARK: - Массив всех событий, создаваемых пользователем
 var trackers: [TrackerCategory] = []
@@ -46,13 +45,13 @@ var categoryName = ""
 
 // MARK: - Перечисление с днями недели
 enum dayOfWeek: String {
-    case monday = "Понедельник"
-    case tuesday = "Вторник"
-    case wednesday = "Среда"
-    case thursday = "Четверг"
-    case friday = "Пятница"
-    case saturday = "Суббота"
-    case sunday = "Воскресенье"
+    case monday = "понедельник"
+    case tuesday = "вторник"
+    case wednesday = "среда"
+    case thursday = "четверг"
+    case friday = "пятница"
+    case saturday = "суббота"
+    case sunday = "воскресенье"
 }
 
 // MARK: - Массив дней недели

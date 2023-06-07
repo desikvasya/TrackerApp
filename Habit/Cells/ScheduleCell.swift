@@ -56,13 +56,13 @@ final class ScheduleCell: UITableViewCell {
         if switcher.isOn {
             selectedDays.append(title.text ?? "")
             switch title.text {
-            case "Понедельник": shortSelectedDays.append("ПН")
-            case "Вторник": shortSelectedDays.append("ВТ")
-            case "Среда": shortSelectedDays.append("СР")
-            case "Четверг": shortSelectedDays.append("ЧТ")
-            case "Пятница": shortSelectedDays.append("ПТ")
-            case "Суббота": shortSelectedDays.append("СБ")
-            case "Воскресенье": shortSelectedDays.append("ВС")
+            case dayOfWeek.monday.rawValue: shortSelectedDays.append("ПН")
+            case dayOfWeek.tuesday.rawValue: shortSelectedDays.append("ВТ")
+            case dayOfWeek.wednesday.rawValue: shortSelectedDays.append("СР")
+            case dayOfWeek.thursday.rawValue: shortSelectedDays.append("ЧТ")
+            case dayOfWeek.friday.rawValue: shortSelectedDays.append("ПТ")
+            case dayOfWeek.saturday.rawValue: shortSelectedDays.append("СБ")
+            case dayOfWeek.sunday.rawValue: shortSelectedDays.append("ВС")
             case .none:
                 return
             case .some(_):

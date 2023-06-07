@@ -30,6 +30,9 @@
 		922B98032A25CE200094F7AE /* NewIrregularEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98022A25CE200094F7AE /* NewIrregularEventViewController.swift */; };
 		922B98052A25CEBA0094F7AE /* IrregularCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98042A25CEBA0094F7AE /* IrregularCategoryCell.swift */; };
 		922B98072A25CFA30094F7AE /* HabitCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98062A25CFA30094F7AE /* HabitCategoryCell.swift */; };
+		922B980A2A26DE310094F7AE /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98092A26DE310094F7AE /* OnboardingViewController.swift */; };
+		922B980C2A26DE440094F7AE /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */; };
+		922B980E2A26E0740094F7AE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980D2A26E0740094F7AE /* HomeViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +80,9 @@
 		922B98022A25CE200094F7AE /* NewIrregularEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewIrregularEventViewController.swift; sourceTree = "<group>"; };
 		922B98042A25CEBA0094F7AE /* IrregularCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularCategoryCell.swift; sourceTree = "<group>"; };
 		922B98062A25CFA30094F7AE /* HabitCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCategoryCell.swift; sourceTree = "<group>"; };
+		922B98092A26DE310094F7AE /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
+		922B980D2A26E0740094F7AE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +131,7 @@
 		922B979D2A24758C0094F7AE /* Habit */ = {
 			isa = PBXGroup;
 			children = (
+				922B98082A26DE180094F7AE /* Onboarding */,
 				922B97AC2A24758C0094F7AE /* Info.plist */,
 				922B979E2A24758C0094F7AE /* AppDelegate.swift */,
 				922B97A02A24758C0094F7AE /* SceneDelegate.swift */,
@@ -207,6 +214,16 @@
 				922B97E52A25B4E40094F7AE /* Main.storyboard */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		922B98082A26DE180094F7AE /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				922B98092A26DE310094F7AE /* OnboardingViewController.swift */,
+				922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */,
+				922B980D2A26E0740094F7AE /* HomeViewController.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,11 +361,14 @@
 				922B97E02A2475C00094F7AE /* Data.swift in Sources */,
 				922B98032A25CE200094F7AE /* NewIrregularEventViewController.swift in Sources */,
 				922B97F22A25BCB20094F7AE /* CategorySelectionViewController.swift in Sources */,
+				922B980A2A26DE310094F7AE /* OnboardingViewController.swift in Sources */,
 				922B98072A25CFA30094F7AE /* HabitCategoryCell.swift in Sources */,
+				922B980E2A26E0740094F7AE /* HomeViewController.swift in Sources */,
 				922B98052A25CEBA0094F7AE /* IrregularCategoryCell.swift in Sources */,
 				922B97F62A25BD240094F7AE /* ScheduleCell.swift in Sources */,
 				922B979F2A24758C0094F7AE /* AppDelegate.swift in Sources */,
 				922B98012A25CE110094F7AE /* NewHabitViewController.swift in Sources */,
+				922B980C2A26DE440094F7AE /* OnboardingPageViewController.swift in Sources */,
 				922B97DB2A2475C00094F7AE /* TrackerStruct.swift in Sources */,
 				922B97DF2A2475C00094F7AE /* MainTabBarViewController.swift in Sources */,
 				922B97A12A24758C0094F7AE /* SceneDelegate.swift in Sources */,
@@ -533,6 +553,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -561,6 +582,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
