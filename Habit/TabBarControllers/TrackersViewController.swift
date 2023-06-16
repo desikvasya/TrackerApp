@@ -21,6 +21,8 @@ class TrackersViewController: UIViewController {
     
     var localTrackers: [TrackerCategory] = trackers
     
+    var dataProvider = DataProvider()
+    
     var trackersCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
@@ -105,10 +107,17 @@ class TrackersViewController: UIViewController {
         hideCollection()
         setupProperties()
         setupView()
+        dataProvider.updateCollectionView()
+        do {
+            try dataProvider.fetchedResultsController.performFetch()
+        } catch {
+            print("failed to fetch")
+        }
     }
     
     // MARK: - Настройка внешнего вида
     private func setupView() {
+        datePickerValueChanged(sender: datePicker)
         view.backgroundColor = .white
         NSLayoutConstraint.activate([
             plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 13),
@@ -158,7 +167,7 @@ class TrackersViewController: UIViewController {
     }
     
     //Метод, обновляющий коллекцию в соответствии с выбранным днём
-    private func updateCollection() {
+    func updateCollection() {
         var newEvents: [Event] = []
         var newCategory: String = ""
         var newTrackers: [TrackerCategory] = []
@@ -179,7 +188,7 @@ class TrackersViewController: UIViewController {
                 newCategory = ""
             }
         }
-        localTrackers = newTrackers
+        localTrackers = newTrackers.sorted(by: {$0.label < $1.label})
     }
     
     // MARK: - Метод, проверяющий, есть ли трекеры на экране и отбражающий (или нет) заглушку
@@ -333,9 +342,9 @@ extension TrackersViewController: TrackersViewControllerProtocol {
     func saveDoneEvent(id: UUID, index: IndexPath) {
         makeDate(dateFormat: "yyyy/MM/dd")
         if trackerRecords.filter({$0.id == localTrackers[index.section].trackers[index.row].id}).contains(where: {$0.day == dateString}) {
-            trackerRecords.removeAll(where: {$0.id == id && $0.day == dateString})
+            dataProvider.deleteRecord(id: id, day: dateString)
         } else {
-            trackerRecords.append(TrackerRecord(id: id, day: dateString))
+            dataProvider.addRecord(id: id, day: dateString)
         }
         trackersCollection.reloadData()
     }
