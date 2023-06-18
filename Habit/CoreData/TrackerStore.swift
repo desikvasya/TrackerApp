@@ -30,7 +30,7 @@ final class TrackerStore {
     
     // MARK: - Метод, удаляющий трекер из БД
     func deleteTracker(id inID: UUID, context: NSManagedObjectContext) {
-        let request = NSFetchRequest<TrackerCoreData>(entityName: "CoreDataModel")
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "DataModel")
         request.returnsObjectsAsFaults = false
         let predicate = NSPredicate(format: " %K == %@", #keyPath(TrackerCoreData.trackerID), inID.uuidString)
         request.predicate = predicate

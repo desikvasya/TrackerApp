@@ -34,11 +34,11 @@
 		922B980C2A26DE440094F7AE /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */; };
 		922B980E2A26E0740094F7AE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980D2A26E0740094F7AE /* HomeViewController.swift */; };
 		924FB1A42A3AEAA0007C3B13 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924FB1A32A3AEAA0007C3B13 /* UIColorExtension.swift */; };
+		924FB1D22A3EBAAF007C3B13 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 924FB1D02A3EBAAF007C3B13 /* DataModel.xcdatamodeld */; };
 		92D059602A395E2000E9D00F /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D0595F2A395E2000E9D00F /* TrackerStore.swift */; };
 		92D059622A395F6400E9D00F /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D059612A395F6400E9D00F /* TrackerCategoryStore.swift */; };
 		92D059692A396AF600E9D00F /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D059682A396AF600E9D00F /* DataProvider.swift */; };
 		92D0596B2A39813100E9D00F /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D0596A2A39813100E9D00F /* TrackerRecordStore.swift */; };
-		92D0596E2A3AA90400E9D00F /* CoreDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 92D0596C2A3AA90400E9D00F /* CoreDataModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,11 +90,11 @@
 		922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		922B980D2A26E0740094F7AE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		924FB1A32A3AEAA0007C3B13 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		924FB1D12A3EBAAF007C3B13 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		92D0595F2A395E2000E9D00F /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		92D059612A395F6400E9D00F /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		92D059682A396AF600E9D00F /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		92D0596A2A39813100E9D00F /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
-		92D0596D2A3AA90400E9D00F /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,7 +224,7 @@
 		922B97E42A25B3220094F7AE /* App */ = {
 			isa = PBXGroup;
 			children = (
-				92D0596C2A3AA90400E9D00F /* CoreDataModel.xcdatamodeld */,
+				924FB1D02A3EBAAF007C3B13 /* DataModel.xcdatamodeld */,
 				922B97A72A24758C0094F7AE /* Assets.xcassets */,
 				922B97E52A25B4E40094F7AE /* Main.storyboard */,
 			);
@@ -392,6 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				922B97E32A25B2420094F7AE /* TrackerTypeViewController.swift in Sources */,
+				924FB1D22A3EBAAF007C3B13 /* DataModel.xcdatamodeld in Sources */,
 				922B97E02A2475C00094F7AE /* Data.swift in Sources */,
 				922B98032A25CE200094F7AE /* NewIrregularEventViewController.swift in Sources */,
 				922B97F22A25BCB20094F7AE /* CategorySelectionViewController.swift in Sources */,
@@ -418,7 +419,6 @@
 				922B97EC2A25B6710094F7AE /* EmojiCell.swift in Sources */,
 				922B97DD2A2475C00094F7AE /* StatisticsViewController.swift in Sources */,
 				922B97FB2A25C7990094F7AE /* TrackerCell.swift in Sources */,
-				92D0596E2A3AA90400E9D00F /* CoreDataModel.xcdatamodeld in Sources */,
 				922B97FF2A25CA790094F7AE /* CategoryCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -754,13 +754,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		92D0596C2A3AA90400E9D00F /* CoreDataModel.xcdatamodeld */ = {
+		924FB1D02A3EBAAF007C3B13 /* DataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				92D0596D2A3AA90400E9D00F /* CoreDataModel.xcdatamodel */,
+				924FB1D12A3EBAAF007C3B13 /* DataModel.xcdatamodel */,
 			);
-			currentVersion = 92D0596D2A3AA90400E9D00F /* CoreDataModel.xcdatamodel */;
-			path = CoreDataModel.xcdatamodeld;
+			currentVersion = 924FB1D12A3EBAAF007C3B13 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
