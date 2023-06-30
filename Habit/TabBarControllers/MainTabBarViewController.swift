@@ -9,6 +9,13 @@ import UIKit
 
 final class MainTabBarViewController: UITabBarController {
     
+        var onboarding: UIViewController?
+    
+        init(onboarding: UIViewController?) {
+            self.onboarding = onboarding
+            super.init(nibName: nil, bundle: nil)
+        }
+    
     // MARK: - Инициализатор
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)

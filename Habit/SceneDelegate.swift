@@ -14,9 +14,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: scene)
-        window.rootViewController = MainTabBarViewController()
+        window.rootViewController = OnboardingViewController()
         window.makeKeyAndVisible()
         self.window = window
+        
+//        guard let windowScene = (scene as? UIWindowScene) else { return }
+//
+//                 let window = UIWindow(windowScene: windowScene)
+////                 let mainTabVC = MainTabBarViewController(onboarding: OnboardingViewController())
+//
+//                 var onboardingVC: OnboardingViewController?
+//                 if !UserDefaults.standard.bool(forKey: "isOnboardingShown") {
+//                     onboardingVC = .init()
+//                     UserDefaults.standard.setValue(true, forKey: "isOnboardingShown")
+//                 }
+//
+//                 let mainTabVC = MainTabBarViewController(onboarding: onboardingVC)
+//
+//                 window.rootViewController = mainTabVC
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

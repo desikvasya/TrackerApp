@@ -32,7 +32,6 @@
 		922B98072A25CFA30094F7AE /* HabitCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98062A25CFA30094F7AE /* HabitCategoryCell.swift */; };
 		922B980A2A26DE310094F7AE /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B98092A26DE310094F7AE /* OnboardingViewController.swift */; };
 		922B980C2A26DE440094F7AE /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */; };
-		922B980E2A26E0740094F7AE /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B980D2A26E0740094F7AE /* HomeViewController.swift */; };
 		924FB1A42A3AEAA0007C3B13 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 924FB1A32A3AEAA0007C3B13 /* UIColorExtension.swift */; };
 		924FB1D22A3EBAAF007C3B13 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 924FB1D02A3EBAAF007C3B13 /* DataModel.xcdatamodeld */; };
 		92D059602A395E2000E9D00F /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D0595F2A395E2000E9D00F /* TrackerStore.swift */; };
@@ -88,7 +87,6 @@
 		922B98062A25CFA30094F7AE /* HabitCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCategoryCell.swift; sourceTree = "<group>"; };
 		922B98092A26DE310094F7AE /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
-		922B980D2A26E0740094F7AE /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		924FB1A32A3AEAA0007C3B13 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		924FB1D12A3EBAAF007C3B13 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		92D0595F2A395E2000E9D00F /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
@@ -236,7 +234,6 @@
 			children = (
 				922B98092A26DE310094F7AE /* OnboardingViewController.swift */,
 				922B980B2A26DE440094F7AE /* OnboardingPageViewController.swift */,
-				922B980D2A26E0740094F7AE /* HomeViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -399,7 +396,6 @@
 				922B980A2A26DE310094F7AE /* OnboardingViewController.swift in Sources */,
 				922B98072A25CFA30094F7AE /* HabitCategoryCell.swift in Sources */,
 				92D059692A396AF600E9D00F /* DataProvider.swift in Sources */,
-				922B980E2A26E0740094F7AE /* HomeViewController.swift in Sources */,
 				922B98052A25CEBA0094F7AE /* IrregularCategoryCell.swift in Sources */,
 				922B97F62A25BD240094F7AE /* ScheduleCell.swift in Sources */,
 				922B979F2A24758C0094F7AE /* AppDelegate.swift in Sources */,
