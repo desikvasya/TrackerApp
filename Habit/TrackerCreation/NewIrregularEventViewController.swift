@@ -196,7 +196,14 @@ final class NewIrregularEventViewController: UIViewController {
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
         let color = colorCollectionData[colorIndex?.row ?? 0]
         let event = Event(name: name, emoji: emoji, color: color, day: nil)
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+        
+        
+        let tabBar = MainTabBarViewController()
+                 tabBar.modalPresentationStyle = .fullScreen
+                 tabBar.modalTransitionStyle = .crossDissolve
+                 present(tabBar, animated: true)
+        
+//        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
         categoryName = ""
         dataProvider.addTracker(event: event, category: category)
     }

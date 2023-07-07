@@ -200,7 +200,13 @@ final class NewHabitViewController: UIViewController {
         let color = colorCollectionData[colorIndex?.row ?? 0]
         let day = selectedDays
         let event = Event(name: name, emoji: emoji, color: color, day: day)
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+        
+        let tabBar = MainTabBarViewController()
+                 tabBar.modalPresentationStyle = .fullScreen
+//                 tabBar.modalTransitionStyle = .crossDissolve
+                 present(tabBar, animated: true)
+        
+//        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
         categoryName = ""
         selectedDays = []
         shortSelectedDays = []

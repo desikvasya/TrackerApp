@@ -186,7 +186,7 @@ private extension OnboardingViewController {
     @objc func buttonTapped() {
         let tabBar = MainTabBarViewController()
                  tabBar.modalPresentationStyle = .fullScreen
-                 tabBar.modalTransitionStyle = .crossDissolve
+//                 tabBar.modalTransitionStyle = .crossDissolve
                  present(tabBar, animated: true)
 //        dismiss(animated: true)
     }
