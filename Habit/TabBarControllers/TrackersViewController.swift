@@ -104,6 +104,8 @@ class TrackersViewController: UIViewController {
     // MARK: - Метод жизненного цикла viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataProvider = DataProvider()
+        dataProvider.delegate = self
         hideCollection()
         setupProperties()
         setupView()

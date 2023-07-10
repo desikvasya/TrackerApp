@@ -107,6 +107,7 @@ final class DataProvider: NSObject {
             trackerRecords.append(TrackerRecord(id: record.tracker?.trackerID ?? UUID(), day: record.day ?? ""))
         }
         delegate?.updateCollection()
+        delegate?.updateCollectionView()
     }
     
 }
