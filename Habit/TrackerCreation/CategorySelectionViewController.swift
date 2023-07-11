@@ -89,6 +89,7 @@ final class CategorySelectionViewController: UIViewController {
     
     // MARK: - Настройка внешнего вида
     private func setupView() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCategories), name: Notification.Name("categories_added"), object: nil)
         view.backgroundColor = .white
         view.addSubview(titleLabel)
         view.addSubview(stackView)
@@ -107,17 +108,17 @@ final class CategorySelectionViewController: UIViewController {
             addCategoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
+            categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 26),
+            categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -26)
         ])
         if !viewModel.getCategories().isEmpty {
             stackView.isHidden = true
-            NSLayoutConstraint.activate([
-                categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
-                categoriesTable.heightAnchor.constraint(equalToConstant: CGFloat(75 * viewModel.getCategories().count))
-            ])
         }
+        showCategories()
     }
     
     private func bind() {
@@ -141,6 +142,22 @@ final class CategorySelectionViewController: UIViewController {
         }
     }
     
+    
+    @objc
+    private func updateCategories() {
+        showCategories()
+        categoriesTable.reloadData()
+    }
+    
+    private func showCategories() {
+        if !viewModel.getCategories().isEmpty {
+            stackView.isHidden = true
+            categoriesTable.isHidden = false
+        } else {
+            stackView.isHidden = false
+            categoriesTable.isHidden = true
+        }
+    }
     
     @objc
     private func showNewCategoryViewController() {
