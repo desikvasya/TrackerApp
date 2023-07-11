@@ -24,7 +24,7 @@ final class TrackerStore {
         } catch {
             print("failed to save")
         }
-        trackerCategoryStore.addCategory(category: category, tracker: tracker, context: context)
+        trackerCategoryStore.addCategoryStruct(category: category, tracker: tracker, context: context)
     }
     
     

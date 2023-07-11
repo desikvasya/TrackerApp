@@ -76,7 +76,7 @@ final class CategorySelectionViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.addTarget(nil, action: #selector(), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(showNewCategoryViewController), for: .touchUpInside)
         return button
     }()
     
@@ -139,6 +139,13 @@ final class CategorySelectionViewController: UIViewController {
                 self.stackView.isHidden = false
             }
         }
+    }
+    
+    
+    @objc
+    private func showNewCategoryViewController() {
+        let viewController = NewCategoryViewController(categoryViewModel: viewModel)
+        show(viewController, sender: self)
     }
     
 }
