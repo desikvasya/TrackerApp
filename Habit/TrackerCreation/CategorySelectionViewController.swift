@@ -9,7 +9,16 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     
-    let viewModel = CategoryViewModel.shared
+    let viewModel: CategoryViewModel
+    
+    init(viewModel: CategoryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Свойства
     let stackView: UIStackView = {
@@ -112,7 +121,8 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     private func bind() {
-        viewModel.isCategoryChoosed = { isOk in
+        viewModel.isCategoryChoosed = { [weak self] isOk in
+            guard let self = self else { return }
             if isOk {
                 self.dismiss(animated: true)
                 let notification = Notification(name: Notification.Name("category_changed"))
@@ -121,7 +131,8 @@ final class CategorySelectionViewController: UIViewController {
                 print("Ошибка выбора категории")
             }
         }
-        viewModel.isCategoryDeleted = { index in
+        viewModel.isCategoryDeleted = { [weak self] index in
+            guard let self = self else { return }
             self.categoriesTable.deleteRows(at: [index], with: .fade)
             if self.viewModel.getCategories().isEmpty {
                 self.categoriesTable.isHidden = true

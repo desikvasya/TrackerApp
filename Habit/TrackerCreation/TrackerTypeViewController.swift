@@ -10,6 +10,8 @@ import UIKit
 /// Экран выбора типа трекера
 final class TrackerTypeViewController: UIViewController {
     
+    let categoryViewModel = CategoryViewModel()
+    
     // MARK: - Свойства
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -78,14 +80,14 @@ final class TrackerTypeViewController: UIViewController {
     // MARK: Метод, вызываемый при выборе пользователем "Нерегулярного события"
     @objc
     private func irregularTapped() {
-        let irregularEventVC = NewIrregularEventViewController()
+        let irregularEventVC = NewIrregularEventViewController(categoryViewModel: categoryViewModel)
         show(irregularEventVC, sender: self)
     }
     
     //MARK: Метод, вызываемый при выборе пользователем "Привычки"
     @objc
     private func habitTapped() {
-        let habitVC = NewHabitViewController()
+        let habitVC = NewHabitViewController(categoryViewModel: categoryViewModel)
         show(habitVC, sender: self)
     }
 }

@@ -11,10 +11,9 @@ import CoreData
 final class TrackerCategoryStore {
     
     private var categories = [
-         "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
+        "Важное", "Домашние дела", "Работа", "Учёба", "Спорт"
      ]
 
-     /// Переменная, хранящая выбранную пользователем категорию события
      private var categoryName = ""
 
      // MARK: - Методы

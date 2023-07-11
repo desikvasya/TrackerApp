@@ -12,7 +12,6 @@ import Foundation
 final class CategoryViewModel {
     
     // MARK: - Свойства
-    static var shared = CategoryViewModel()
     
     var isCategoryChoosed: Binding<Bool>?
     
@@ -21,8 +20,7 @@ final class CategoryViewModel {
     var model = TrackerCategoryStore()
     
     // MARK: - Методы
-         private init() {}
-
+    
          func didChooseCategory(name category: String) {
              let result = model.changeChoosedCategory(category: category)
              isCategoryChoosed?(result)
