@@ -10,6 +10,34 @@ import CoreData
 
 final class TrackerCategoryStore {
     
+    private var categories = [
+         "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
+     ]
+
+     /// Переменная, хранящая выбранную пользователем категорию события
+     private var categoryName = ""
+
+     // MARK: - Методы
+     func changeChoosedCategory(category: String) -> Bool {
+         categoryName = category
+         return true
+     }
+
+     func getCategories() -> [String] {
+         return categories
+     }
+
+     func deleteCategory(at index: IndexPath) -> IndexPath {
+         categories.remove(at: index.row)
+         return index
+     }
+
+     func getChoosedCategory() -> String {
+         return categoryName
+     }
+
+    
+    
     // MARK: - Method to add a category in the database
     func addCategory(category: String, tracker: TrackerCoreData, context: NSManagedObjectContext) {
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")

@@ -9,6 +9,8 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     
+    let viewModel = CategoryViewModel.shared
+    
     // MARK: - Свойства
     let stackView: UIStackView = {
         let stack = UIStackView()
@@ -73,6 +75,7 @@ final class CategorySelectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        bind()
     }
     
     // MARK: - Настройка внешнего вида
@@ -97,14 +100,33 @@ final class CategorySelectionViewController: UIViewController {
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
         ])
-        if !categories.isEmpty {
+        if !viewModel.getCategories().isEmpty {
             stackView.isHidden = true
             NSLayoutConstraint.activate([
                 categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
                 categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
                 categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
-                categoriesTable.heightAnchor.constraint(equalToConstant: CGFloat(75 * categories.count))
+                categoriesTable.heightAnchor.constraint(equalToConstant: CGFloat(75 * viewModel.getCategories().count))
             ])
+        }
+    }
+    
+    private func bind() {
+        viewModel.isCategoryChoosed = { isOk in
+            if isOk {
+                self.dismiss(animated: true)
+                let notification = Notification(name: Notification.Name("category_changed"))
+                NotificationCenter.default.post(notification)
+            } else {
+                print("Ошибка выбора категории")
+            }
+        }
+        viewModel.isCategoryDeleted = { index in
+            self.categoriesTable.deleteRows(at: [index], with: .fade)
+            if self.viewModel.getCategories().isEmpty {
+                self.categoriesTable.isHidden = true
+                self.stackView.isHidden = false
+            }
         }
     }
     
@@ -115,7 +137,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
     
     // MARK: Метод, возвращающий количество строк в секции таблицы
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel.getCategories().count
     }
     
     // MARK: Метод создания и настройки ячейки таблицы
@@ -125,7 +147,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        categoryCell.title.text = categories[indexPath.row]
+        categoryCell.title.text = viewModel.getCategories()[indexPath.row]
         return categoryCell
     }
     
@@ -136,14 +158,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
     
     // MARK: Метод, обрабатывающий удаление строки таблицы
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            categories.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        if categories.isEmpty {
-            categoriesTable.isHidden = true
-            stackView.isHidden = false
-        }
+        viewModel.deleteCategory(at: indexPath)
     }
     
 }
@@ -168,17 +183,7 @@ extension CategorySelectionViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
         cell?.checkbox.image = UIImage(systemName: "checkmark")
         
-        dismiss(animated: true) {
-            categoryName = cell?.title.text ?? ""
-            let notification = Notification(name: Notification.Name("category_changed"))
-            NotificationCenter.default.post(notification)
-        }
-    }
-    
-    // MARK: Метод, вызываемый при повторном нажатии (снятии выделения) на строку таблицы
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
-        cell?.checkbox.image = UIImage()
+        viewModel.didChooseCategory(name: cell?.title.text ?? "-")
     }
     
     // MARK: Метод, определяющий заголовок для удаления строки таблицы

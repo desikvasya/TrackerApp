@@ -8,8 +8,11 @@
 import UIKit
 
 final class NewHabitViewController: UIViewController {
+    
     let dataProvider = DataProvider()
     
+    let categoryViewModel = CategoryViewModel.shared
+
     // MARK: - Свойства
     let titleLabel: UILabel = {
         let label = UILabel()
@@ -148,7 +151,7 @@ final class NewHabitViewController: UIViewController {
     
     // MARK: - Настройка свойств, жестов и нотификаций
     private func setupProperties() {
-        categoryName = ""
+        categoryViewModel.didChooseCategory(name: "")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         NotificationCenter.default.addObserver(self, selector: #selector(changeFirstCell), name: Notification.Name("category_changed"), object: nil)
@@ -176,7 +179,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryName.isEmpty && !selectedDays.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
+        if enterNameTextField.hasText && !categoryViewModel.getChoosedCategory().isEmpty && !selectedDays.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
             createButton.backgroundColor = .black
             createButton.isEnabled = true
         }
@@ -193,7 +196,7 @@ final class NewHabitViewController: UIViewController {
     @objc
     private func create() {
         let name = enterNameTextField.text ?? ""
-        let category = categoryName
+        let category = categoryViewModel.getChoosedCategory()
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
@@ -207,7 +210,7 @@ final class NewHabitViewController: UIViewController {
                  present(tabBar, animated: true)
         
 //        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
-        categoryName = ""
+        categoryViewModel.didChooseCategory(name: "")
         selectedDays = []
         shortSelectedDays = []
         dataProvider.addTracker(event: event, category: category)
@@ -219,7 +222,7 @@ final class NewHabitViewController: UIViewController {
         let cell = categoriesTable.cellForRow(at: [0,0]) as? HabitCategoryCell
         cell?.title.removeFromSuperview()
         cell?.addSubview(cell!.title)
-        cell?.categoryName.text = categoryName
+        cell?.categoryName.text = categoryViewModel.getChoosedCategory()
         cell?.categoryName.topAnchor.constraint(equalTo: cell!.title.bottomAnchor, constant: 2).isActive = true
         cell?.categoryName.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true
         cell?.title.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true

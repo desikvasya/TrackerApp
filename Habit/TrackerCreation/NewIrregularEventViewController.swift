@@ -11,6 +11,8 @@ final class NewIrregularEventViewController: UIViewController {
     
     let dataProvider = DataProvider()
     
+    let categoryViewModel = CategoryViewModel.shared
+    
     // MARK: - Свойства
     let colorCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -166,7 +168,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     // MARK: - Настройка свойств, жестов и нотификаций
     private func setupProperties() {
-        categoryName = ""
+        categoryViewModel.didChooseCategory(name: "")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
@@ -190,7 +192,7 @@ final class NewIrregularEventViewController: UIViewController {
     @objc
     private func create() {
         let name = enterNameTextField.text ?? ""
-        let category = categoryName
+        let category = categoryViewModel.getChoosedCategory()
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
@@ -203,13 +205,12 @@ final class NewIrregularEventViewController: UIViewController {
                  tabBar.modalTransitionStyle = .crossDissolve
                  present(tabBar, animated: true)
         
-//        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
-        categoryName = ""
+        categoryViewModel.didChooseCategory(name: "")
         dataProvider.addTracker(event: event, category: category)
     }
     
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryName.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
+        if enterNameTextField.hasText && !categoryViewModel.getChoosedCategory().isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
             createButton.backgroundColor = .black
             createButton.isEnabled = true
         }
@@ -363,7 +364,7 @@ extension NewIrregularEventViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        categoryCell.categoryName.text = categoryName
+        categoryCell.categoryName.text = categoryViewModel.getChoosedCategory()
         return categoryCell
     }
     
