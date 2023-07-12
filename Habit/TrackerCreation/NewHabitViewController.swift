@@ -8,10 +8,23 @@
 import UIKit
 
 final class NewHabitViewController: UIViewController {
+    
     let dataProvider = DataProvider()
     
+    private let categoryViewModel: CategoryViewModel
+    
+    
+    init(categoryViewModel: CategoryViewModel) {
+        self.categoryViewModel = categoryViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Свойства
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая привычка"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -19,7 +32,7 @@ final class NewHabitViewController: UIViewController {
         return label
     }()
     
-    let enterNameTextField: UITextField = {
+    private let enterNameTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Введите название трекера"
         field.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 0.3)
@@ -31,7 +44,7 @@ final class NewHabitViewController: UIViewController {
         return field
     }()
     
-    let categoriesTable: UITableView = {
+    private let categoriesTable: UITableView = {
         let table = UITableView()
         table.register(HabitCategoryCell.self, forCellReuseIdentifier: "category")
         table.isScrollEnabled = false
@@ -41,7 +54,7 @@ final class NewHabitViewController: UIViewController {
         return table
     }()
     
-    let firstStack: UIStackView = {
+    private let firstStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .fill
@@ -51,7 +64,7 @@ final class NewHabitViewController: UIViewController {
         return stack
     }()
     
-    let colorCollection: UICollectionView = {
+    private let colorCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell")
@@ -59,7 +72,7 @@ final class NewHabitViewController: UIViewController {
         return collection
     }()
     
-    let emojiCollection: UICollectionView = {
+    private let emojiCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojiCell")
@@ -67,7 +80,7 @@ final class NewHabitViewController: UIViewController {
         return collection
     }()
     
-    let cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
         button.setTitleColor(UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1), for: .normal)
@@ -79,7 +92,7 @@ final class NewHabitViewController: UIViewController {
         return button
     }()
     
-    let createButton: UIButton = {
+    private let createButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -91,7 +104,7 @@ final class NewHabitViewController: UIViewController {
         return button
     }()
     
-    let secondStack: UIStackView = {
+    private let secondStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .fill
@@ -101,7 +114,7 @@ final class NewHabitViewController: UIViewController {
         return stack
     }()
     
-    let scroll: UIScrollView = {
+    private let scroll: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.indicatorStyle = .white
@@ -148,7 +161,7 @@ final class NewHabitViewController: UIViewController {
     
     // MARK: - Настройка свойств, жестов и нотификаций
     private func setupProperties() {
-        categoryName = ""
+        categoryViewModel.didChooseCategory(name: "")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         NotificationCenter.default.addObserver(self, selector: #selector(changeFirstCell), name: Notification.Name("category_changed"), object: nil)
@@ -176,7 +189,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryName.isEmpty && !selectedDays.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
+        if enterNameTextField.hasText && !categoryViewModel.chosenCategory.isEmpty && !selectedDays.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
             createButton.backgroundColor = .black
             createButton.isEnabled = true
         }
@@ -193,15 +206,21 @@ final class NewHabitViewController: UIViewController {
     @objc
     private func create() {
         let name = enterNameTextField.text ?? ""
-        let category = categoryName
+        let category = categoryViewModel.chosenCategory
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
         let color = colorCollectionData[colorIndex?.row ?? 0]
         let day = selectedDays
         let event = Event(name: name, emoji: emoji, color: color, day: day)
-        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
-        categoryName = ""
+        
+        let tabBar = MainTabBarViewController()
+        tabBar.modalPresentationStyle = .fullScreen
+        //                 tabBar.modalTransitionStyle = .crossDissolve
+        present(tabBar, animated: true)
+        
+        //        UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+        categoryViewModel.didChooseCategory(name: "")
         selectedDays = []
         shortSelectedDays = []
         dataProvider.addTracker(event: event, category: category)
@@ -213,7 +232,7 @@ final class NewHabitViewController: UIViewController {
         let cell = categoriesTable.cellForRow(at: [0,0]) as? HabitCategoryCell
         cell?.title.removeFromSuperview()
         cell?.addSubview(cell!.title)
-        cell?.categoryName.text = categoryName
+        cell?.categoryName.text = categoryViewModel.chosenCategory
         cell?.categoryName.topAnchor.constraint(equalTo: cell!.title.bottomAnchor, constant: 2).isActive = true
         cell?.categoryName.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true
         cell?.title.leadingAnchor.constraint(equalTo: cell!.leadingAnchor, constant: 16).isActive = true
@@ -305,7 +324,7 @@ extension NewHabitViewController: UITableViewDelegate {
     // MARK: Метод, вызываемый при нажатии на строку таблицы
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let choiceOfCategoryViewController = CategorySelectionViewController()
+            let choiceOfCategoryViewController = CategorySelectionViewController(viewModel: categoryViewModel)
             show(choiceOfCategoryViewController, sender: self)
         } else {
             let scheduleViewController = ScheduleSelectionViewController()
@@ -397,8 +416,9 @@ extension NewHabitViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == colorCollection {
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
-            cell?.layer.cornerRadius = 16
+            cell?.layer.borderWidth = 3
+            cell?.layer.borderColor = cell?.color.backgroundColor?.cgColor.copy(alpha: 0.3)
+            cell?.layer.cornerRadius = 8
             cell?.layer.masksToBounds = true
             activateButton()
         } else {
@@ -414,7 +434,7 @@ extension NewHabitViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if collectionView == colorCollection {
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.backgroundColor = UIColor.clear
+            cell?.layer.borderColor = CGColor(gray: 0, alpha: 0)
         } else {
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
             cell?.backgroundColor = UIColor.clear

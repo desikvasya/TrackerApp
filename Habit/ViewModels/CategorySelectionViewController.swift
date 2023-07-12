@@ -9,6 +9,17 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     
+    private let viewModel: CategoryViewModel
+    
+    init(viewModel: CategoryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Свойства
     let stackView: UIStackView = {
         let stack = UIStackView()
@@ -65,7 +76,7 @@ final class CategorySelectionViewController: UIViewController {
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.addTarget(nil, action: #selector(), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(showNewCategoryViewController), for: .touchUpInside)
         return button
     }()
     
@@ -73,10 +84,12 @@ final class CategorySelectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        bind()
     }
     
     // MARK: - Настройка внешнего вида
     private func setupView() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCategories), name: Notification.Name("categories_added"), object: nil)
         view.backgroundColor = .white
         view.addSubview(titleLabel)
         view.addSubview(stackView)
@@ -95,17 +108,61 @@ final class CategorySelectionViewController: UIViewController {
             addCategoryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             addCategoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             addCategoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
+            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
+            categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 26),
+            categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -26)
         ])
-        if !categories.isEmpty {
+        if !viewModel.categories.isEmpty {
             stackView.isHidden = true
-            NSLayoutConstraint.activate([
-                categoriesTable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                categoriesTable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
-                categoriesTable.heightAnchor.constraint(equalToConstant: CGFloat(75 * categories.count))
-            ])
         }
+        showCategories()
+    }
+    
+    private func bind() {
+        viewModel.isCategoryChoosed = { [weak self] isOk in
+            guard let self = self else { return }
+            if isOk {
+                self.dismiss(animated: true)
+                let notification = Notification(name: .categoriesDidChanged)
+                NotificationCenter.default.post(notification)
+            } else {
+                print("Ошибка выбора категории")
+            }
+        }
+        viewModel.isCategoryDeleted = { [weak self] index in
+            guard let self = self else { return }
+            self.categoriesTable.deleteRows(at: [index], with: .fade)
+            if self.viewModel.categories.isEmpty {
+                self.categoriesTable.isHidden = true
+                self.stackView.isHidden = false
+            }
+        }
+    }
+    
+    
+    @objc
+    private func updateCategories() {
+        showCategories()
+        categoriesTable.reloadData()
+    }
+    
+    private func showCategories() {
+        if !viewModel.categories.isEmpty {
+            stackView.isHidden = !viewModel.categories.isEmpty
+            categoriesTable.isHidden = viewModel.categories.isEmpty
+        } else {
+            stackView.isHidden = viewModel.categories.isEmpty
+            categoriesTable.isHidden = !viewModel.categories.isEmpty
+        }
+    }
+    
+    @objc
+    private func showNewCategoryViewController() {
+        let viewController = NewCategoryViewController(categoryViewModel: viewModel)
+        show(viewController, sender: self)
     }
     
 }
@@ -115,7 +172,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
     
     // MARK: Метод, возвращающий количество строк в секции таблицы
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return viewModel.categories.count
     }
     
     // MARK: Метод создания и настройки ячейки таблицы
@@ -125,7 +182,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        categoryCell.title.text = categories[indexPath.row]
+        categoryCell.title.text = viewModel.categories[indexPath.row]
         return categoryCell
     }
     
@@ -136,14 +193,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
     
     // MARK: Метод, обрабатывающий удаление строки таблицы
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            categories.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        if categories.isEmpty {
-            categoriesTable.isHidden = true
-            stackView.isHidden = false
-        }
+        viewModel.deleteCategory(at: indexPath)
     }
     
 }
@@ -168,17 +218,7 @@ extension CategorySelectionViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
         cell?.checkbox.image = UIImage(systemName: "checkmark")
         
-        dismiss(animated: true) {
-            categoryName = cell?.title.text ?? ""
-            let notification = Notification(name: Notification.Name("category_changed"))
-            NotificationCenter.default.post(notification)
-        }
-    }
-    
-    // MARK: Метод, вызываемый при повторном нажатии (снятии выделения) на строку таблицы
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? CategoryCell
-        cell?.checkbox.image = UIImage()
+        viewModel.didChooseCategory(name: cell?.title.text ?? "-")
     }
     
     // MARK: Метод, определяющий заголовок для удаления строки таблицы
@@ -186,4 +226,9 @@ extension CategorySelectionViewController: UITableViewDelegate {
         return "Удалить"
     }
     
+}
+
+// MARK: - Расширение для Notification
+extension Notification.Name {
+    static let categoriesDidChanged = Notification.Name("category_changed")
 }

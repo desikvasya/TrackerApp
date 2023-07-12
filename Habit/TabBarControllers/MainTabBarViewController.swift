@@ -9,10 +9,18 @@ import UIKit
 
 final class MainTabBarViewController: UITabBarController {
     
+    private var onboarding: UIViewController?
+    
+    init(onboarding: UIViewController?) {
+        self.onboarding = onboarding
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     // MARK: - Инициализатор
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setupTabBar()
+        setupProperties()
     }
     
     required init?(coder: NSCoder) {
@@ -32,5 +40,15 @@ final class MainTabBarViewController: UITabBarController {
         tabBar.layer.shadowOpacity = 0.3
         tabBar.layer.shadowOffset = .init(width: 0, height: -0.5)
         tabBar.layer.masksToBounds = false
+    }
+    
+    private func setupProperties() {
+        UserDefaults.standard.set(true, forKey: "isLogged")
+        let categoryList = UserDefaults.standard.array(forKey: "category_list") as? [String]
+        if categoryList == nil || categoryList == [] {
+            UserDefaults.standard.set([
+                "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
+            ], forKey: "category_list")
+        }
     }
 }

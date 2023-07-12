@@ -104,10 +104,13 @@ class TrackersViewController: UIViewController {
     // MARK: - Метод жизненного цикла viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataProvider = DataProvider()
+        dataProvider.delegate = self
         hideCollection()
         setupProperties()
         setupView()
         dataProvider.updateCollectionView()
+        updateCollectionView()
         do {
             try dataProvider.fetchedResultsController.performFetch()
         } catch {
@@ -200,6 +203,12 @@ class TrackersViewController: UIViewController {
             stackView.isHidden = false
             trackersCollection.isHidden = true
         }
+    }
+    
+    func updateCollectionView() {
+        updateCollection()
+        hideCollection()
+        trackersCollection.reloadData()
     }
     
     // MARK: - Метод, вызываемый когда меняется дата в Date Picker
