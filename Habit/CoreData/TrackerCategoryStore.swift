@@ -10,18 +10,32 @@ import CoreData
 
 final class TrackerCategoryStore {
     
-    private var categories = UserDefaults.standard.array(forKey: "category_list") as? [String]
+    private let userDefaults = UserDefaults.standard
+    
+    private enum UserDefaultsKeys {
+        static let categoryList = "category_list"
+    }
+    
+    private var categories: [String]? {
+        didSet {
+            categories = categories ?? []
+        }
+    }
+    
+    init() {
+        categories = userDefaults.array(forKey: UserDefaultsKeys.categoryList) as? [String]
+    }
     
     private var categoryName = ""
     
     // MARK: - Методы
-    func changeChoosedCategory(category: String) -> Bool {
+    func changeChosenCategory(category: String) -> Bool {
         categoryName = category
         return true
     }
     
-    func getCategories() -> [String] {
-        return categories ?? []
+    var savedCategories: [String] {
+        categories ?? []
     }
     
     func deleteCategory(at index: IndexPath) -> IndexPath {
@@ -30,7 +44,7 @@ final class TrackerCategoryStore {
         return index
     }
     
-    func getChoosedCategory() -> String {
+    func getChosenCategory() -> String {
         return categoryName
     }
     

@@ -216,11 +216,9 @@
 			isa = PBXGroup;
 			children = (
 				922B97E22A25B2420094F7AE /* TrackerTypeViewController.swift */,
-				922B97F12A25BCB20094F7AE /* CategorySelectionViewController.swift */,
 				922B97F32A25BCC30094F7AE /* ScheduleSelectionViewController.swift */,
 				922B98002A25CE110094F7AE /* NewHabitViewController.swift */,
 				922B98022A25CE200094F7AE /* NewIrregularEventViewController.swift */,
-				926917CC2A5D177600B96F30 /* NewCategoryViewController.swift */,
 			);
 			path = TrackerCreation;
 			sourceTree = "<group>";
@@ -255,7 +253,9 @@
 		926917C92A5D0D9100B96F30 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				922B97F12A25BCB20094F7AE /* CategorySelectionViewController.swift */,
 				926917CA2A5D0DA100B96F30 /* CategoryViewModel.swift */,
+				926917CC2A5D177600B96F30 /* NewCategoryViewController.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";

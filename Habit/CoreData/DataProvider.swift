@@ -53,17 +53,17 @@ final class DataProvider: NSObject {
     func deleteTracker(id inID: UUID) {
         trackerStore.deleteTracker(id: inID, context: context)
     }
-
+    
     // MARK: - Метод, добавляющий +1 к счётчику выполненных трекеров
     func addRecord(id: UUID, day: String) {
         trackerRecordStore.addRecord(id: id, day: day, context: context)
     }
-
+    
     // MARK: - Метод, снимающий -1 от счётчика трекеров
     func deleteRecord(id: UUID, day: String) {
         trackerRecordStore.deleteRecord(id: id, day: day, context: context)
     }
-
+    
     // MARK: - Метод, обновляющий массивы, из которых UICollection берёт данные
     func updateCollectionView() {
         let categoryRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")

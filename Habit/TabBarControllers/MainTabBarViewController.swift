@@ -9,12 +9,12 @@ import UIKit
 
 final class MainTabBarViewController: UITabBarController {
     
-        var onboarding: UIViewController?
+    private var onboarding: UIViewController?
     
-        init(onboarding: UIViewController?) {
-            self.onboarding = onboarding
-            super.init(nibName: nil, bundle: nil)
-        }
+    init(onboarding: UIViewController?) {
+        self.onboarding = onboarding
+        super.init(nibName: nil, bundle: nil)
+    }
     
     // MARK: - Инициализатор
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -43,12 +43,12 @@ final class MainTabBarViewController: UITabBarController {
     }
     
     private func setupProperties() {
-         UserDefaults.standard.set(true, forKey: "isLogged")
-         let categoryList = UserDefaults.standard.array(forKey: "category_list") as? [String]
-         if categoryList == nil || categoryList == [] {
-             UserDefaults.standard.set([
-                 "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
-             ], forKey: "category_list")
-         }
-     }
+        UserDefaults.standard.set(true, forKey: "isLogged")
+        let categoryList = UserDefaults.standard.array(forKey: "category_list") as? [String]
+        if categoryList == nil || categoryList == [] {
+            UserDefaults.standard.set([
+                "Домашние дела", "Хобби", "Работа", "Учёба", "Спорт"
+            ], forKey: "category_list")
+        }
+    }
 }

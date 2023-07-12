@@ -10,9 +10,9 @@ import UIKit
 final class NewCategoryViewController: UIViewController {
     
     // MARK: - Свойства
-    let categoryViewModel: CategoryViewModel
+    private let categoryViewModel: CategoryViewModel
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новая категория"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -20,7 +20,7 @@ final class NewCategoryViewController: UIViewController {
         return label
     }()
     
-    let createButton: UIButton = {
+    private let createButton: UIButton = {
         let button = UIButton()
         button.setTitle("Готово", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -32,7 +32,7 @@ final class NewCategoryViewController: UIViewController {
         return button
     }()
     
-    let enterNameTextField: UITextField = {
+    private let enterNameTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Введите название категории"
         field.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 0.3)
@@ -104,14 +104,22 @@ final class NewCategoryViewController: UIViewController {
     }
     
     private func bind() {
-        categoryViewModel.isCategoryAdded = { result in
+        categoryViewModel.isCategoryAdded = { [self] result in
             switch result {
-            case true: self.dismiss(animated: true)
+            case true:
+                self.dismiss(animated: true)
                 let notification = Notification(name: Notification.Name("categories_added"))
                 NotificationCenter.default.post(notification)
-            case false: print("Ошибка добавления категории")
+            case false:
+                showErrorAlert(message: "Ошибка добавления категории")
             }
         }
+    }
+    
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
     @objc

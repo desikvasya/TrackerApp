@@ -10,7 +10,7 @@ import UIKit
 /// Экран выбора типа трекера
 final class TrackerTypeViewController: UIViewController {
     
-    let categoryViewModel = CategoryViewModel()
+    private let categoryViewModel = CategoryViewModel()
     
     // MARK: - Свойства
     let titleLabel: UILabel = {

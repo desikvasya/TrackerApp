@@ -11,7 +11,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     let dataProvider = DataProvider()
     
-    let categoryViewModel: CategoryViewModel
+    private let categoryViewModel: CategoryViewModel
     
     init(categoryViewModel: CategoryViewModel) {
         self.categoryViewModel = categoryViewModel
@@ -23,7 +23,7 @@ final class NewIrregularEventViewController: UIViewController {
     }
     
     // MARK: - Свойства
-    let colorCollection: UICollectionView = {
+    private let colorCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(ColorCell.self, forCellWithReuseIdentifier: "colorCell")
@@ -31,7 +31,7 @@ final class NewIrregularEventViewController: UIViewController {
         return collection
     }()
     
-    let emojiCollection: UICollectionView = {
+    private let emojiCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(EmojiCell.self, forCellWithReuseIdentifier: "emojiCell")
@@ -39,7 +39,7 @@ final class NewIrregularEventViewController: UIViewController {
         return collection
     }()
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Новое нерегулярное событие"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -47,7 +47,7 @@ final class NewIrregularEventViewController: UIViewController {
         return label
     }()
     
-    let enterNameTextField: UITextField = {
+    private let enterNameTextField: UITextField = {
         let field = UITextField()
         field.placeholder = "Введите название трекера"
         field.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 0.3)
@@ -59,7 +59,7 @@ final class NewIrregularEventViewController: UIViewController {
         return field
     }()
     
-    let categoriesTable: UITableView = {
+    private let categoriesTable: UITableView = {
         let table = UITableView()
         table.register(IrregularCategoryCell.self, forCellReuseIdentifier: "category")
         table.isScrollEnabled = false
@@ -67,7 +67,7 @@ final class NewIrregularEventViewController: UIViewController {
         return table
     }()
     
-    let firstStack: UIStackView = {
+    private let firstStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .fill
@@ -77,7 +77,7 @@ final class NewIrregularEventViewController: UIViewController {
         return stack
     }()
     
-    let cancelButton: UIButton = {
+    private let cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle("Отменить", for: .normal)
         button.setTitleColor(UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1), for: .normal)
@@ -89,7 +89,7 @@ final class NewIrregularEventViewController: UIViewController {
         return button
     }()
     
-    let createButton: UIButton = {
+    private let createButton: UIButton = {
         let button = UIButton()
         button.setTitle("Создать", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -101,7 +101,7 @@ final class NewIrregularEventViewController: UIViewController {
         return button
     }()
     
-    let secondStack: UIStackView = {
+    private let secondStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .fill
@@ -111,7 +111,7 @@ final class NewIrregularEventViewController: UIViewController {
         return stack
     }()
     
-    let scroll: UIScrollView = {
+    private let scroll: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.indicatorStyle = .white
@@ -201,7 +201,7 @@ final class NewIrregularEventViewController: UIViewController {
     @objc
     private func create() {
         let name = enterNameTextField.text ?? ""
-        let category = categoryViewModel.getChoosedCategory()
+        let category = categoryViewModel.chosenCategory
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
@@ -219,7 +219,7 @@ final class NewIrregularEventViewController: UIViewController {
     }
     
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryViewModel.getChoosedCategory().isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
+        if enterNameTextField.hasText && !categoryViewModel.chosenCategory.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
             createButton.backgroundColor = .black
             createButton.isEnabled = true
         }
@@ -332,8 +332,9 @@ extension NewIrregularEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == colorCollection {
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
-            cell?.layer.cornerRadius = 16
+            cell?.layer.borderWidth = 3
+            cell?.layer.borderColor = cell?.color.backgroundColor?.cgColor.copy(alpha: 0.3)
+            cell?.layer.cornerRadius = 8
             cell?.layer.masksToBounds = true
             activateButton()
         } else {
@@ -349,7 +350,7 @@ extension NewIrregularEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if collectionView == colorCollection {
             let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.backgroundColor = UIColor.clear
+            cell?.layer.borderColor = CGColor(gray: 0, alpha: 0)
         } else {
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
             cell?.backgroundColor = UIColor.clear
@@ -373,7 +374,7 @@ extension NewIrregularEventViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        categoryCell.categoryName.text = categoryViewModel.getChoosedCategory()
+        categoryCell.categoryName.text = categoryViewModel.chosenCategory
         return categoryCell
     }
     

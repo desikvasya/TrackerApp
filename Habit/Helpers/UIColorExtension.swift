@@ -9,7 +9,7 @@ import UIKit
 
 extension UIColor {
     
-// color to string convert
+    // color to string convert
     static func hexString(from color: UIColor) -> String {
         let components = color.cgColor.components
         let r: CGFloat = components?[0] ?? 0.0
@@ -23,7 +23,7 @@ extension UIColor {
         )
     }
     
-// string to color convert
+    // string to color convert
     static func color(from hex: String) -> UIColor {
         var rgbValue:UInt64 = 0
         Scanner(string: hex).scanHexInt64(&rgbValue)

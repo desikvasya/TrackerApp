@@ -9,7 +9,7 @@ import UIKit
 
 final class CategorySelectionViewController: UIViewController {
     
-    let viewModel: CategoryViewModel
+    private let viewModel: CategoryViewModel
     
     init(viewModel: CategoryViewModel) {
         self.viewModel = viewModel
@@ -115,7 +115,7 @@ final class CategorySelectionViewController: UIViewController {
             categoriesTable.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 26),
             categoriesTable.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -26)
         ])
-        if !viewModel.getCategories().isEmpty {
+        if !viewModel.categories.isEmpty {
             stackView.isHidden = true
         }
         showCategories()
@@ -126,7 +126,7 @@ final class CategorySelectionViewController: UIViewController {
             guard let self = self else { return }
             if isOk {
                 self.dismiss(animated: true)
-                let notification = Notification(name: Notification.Name("category_changed"))
+                let notification = Notification(name: .categoriesDidChanged)
                 NotificationCenter.default.post(notification)
             } else {
                 print("Ошибка выбора категории")
@@ -135,7 +135,7 @@ final class CategorySelectionViewController: UIViewController {
         viewModel.isCategoryDeleted = { [weak self] index in
             guard let self = self else { return }
             self.categoriesTable.deleteRows(at: [index], with: .fade)
-            if self.viewModel.getCategories().isEmpty {
+            if self.viewModel.categories.isEmpty {
                 self.categoriesTable.isHidden = true
                 self.stackView.isHidden = false
             }
@@ -150,12 +150,12 @@ final class CategorySelectionViewController: UIViewController {
     }
     
     private func showCategories() {
-        if !viewModel.getCategories().isEmpty {
-            stackView.isHidden = true
-            categoriesTable.isHidden = false
+        if !viewModel.categories.isEmpty {
+            stackView.isHidden = !viewModel.categories.isEmpty
+            categoriesTable.isHidden = viewModel.categories.isEmpty
         } else {
-            stackView.isHidden = false
-            categoriesTable.isHidden = true
+            stackView.isHidden = viewModel.categories.isEmpty
+            categoriesTable.isHidden = !viewModel.categories.isEmpty
         }
     }
     
@@ -172,7 +172,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
     
     // MARK: Метод, возвращающий количество строк в секции таблицы
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getCategories().count
+        return viewModel.categories.count
     }
     
     // MARK: Метод создания и настройки ячейки таблицы
@@ -182,7 +182,7 @@ extension CategorySelectionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        categoryCell.title.text = viewModel.getCategories()[indexPath.row]
+        categoryCell.title.text = viewModel.categories[indexPath.row]
         return categoryCell
     }
     
@@ -226,4 +226,9 @@ extension CategorySelectionViewController: UITableViewDelegate {
         return "Удалить"
     }
     
+}
+
+// MARK: - Расширение для Notification
+extension Notification.Name {
+    static let categoriesDidChanged = Notification.Name("category_changed")
 }
