@@ -264,7 +264,13 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell?.emoji.text = localTrackers[indexPath.section].trackers[indexPath.row].emoji
         cell?.name.text = localTrackers[indexPath.section].trackers[indexPath.row].name
         cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color
-        cell?.quantity.text = "\(trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).count) дней"
+        
+        let completedDays = trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).count
+        
+        let completedDaysString = String.localizedStringWithFormat(NSLocalizedString("days", comment: ""), completedDays)
+        
+        cell?.quantity.text = completedDaysString
+        
         makeDate(dateFormat: "yyyy/MM/dd")
         if trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).contains(where: {$0.day == dateString}) {
             cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color.withAlphaComponent(0.5)
