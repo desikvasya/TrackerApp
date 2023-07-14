@@ -1,0 +1,80 @@
+/*
+  Localizable.strings
+  Habit
+
+  Created by Denis on 14.07.2023.
+*/
+
+/// TrackersViewController
+"TrackersViewController.title" = "Трекеры";
+"TrackersViewController.search" = "Поиск";
+"TrackersViewController.whatWeWillTrace" = "Что будем отслеживать?";
+"TrackersViewController.searchBar" = "Поиск";
+
+/// StatisticsViewController
+"StatisticsViewController.title" = "Статистика";
+"StatisticsViewController.placeholderTitle" = "Анализировать пока нечего";
+
+//  OnboardingViewController
+"OnboardingViewController.button" = "Вот это технологии!";
+"onboarding.message1" = "Отслеживайте только то, что хотите";
+"onboarding.message2" = "Даже если это\\nне литры воды и йога";
+
+//  TrackerTypeViewController
+"TrackerTypeViewController.title" = "Создание трекера";
+"TrackerTypeViewController.habitTitle" = "Привычка";
+"TrackerTypeViewController.eventTitle" = "Нерегулярное событие";
+
+// NewHabitViewController
+"NewHabitViewController.title" = "Новая привычка";
+"NewHabitViewController.placeholder" = "Введите название трекера";
+"NewHabitViewController.cancelButton" = "Отменить";
+"NewHabitViewController.createButton" = "Создать";
+"NewHabitViewController.categoryCell.1" = "Категория";
+"NewHabitViewController.categoryCell.2" = "Расписание";
+
+"NewHabitViewController.colorHeader" = "Цвет";
+"NewHabitViewController.emojiHeader" = "Эмоджи";
+
+// NewIrregularEventViewController
+"NewIrregularEventViewController.title" = "Новое событие";
+"NewIrregularEventViewController.placeholder" = "Введите название трекера";
+"NewIrregularEventViewController.cancelButton" = "Отменить";
+"NewIrregularEventViewController.createButton" = "Создать";
+"NewIrregularEventViewController.categoryCell.1" = "Категория";
+
+"NewIrregularEventViewController.colorHeader" = "Цвет";
+"NewIrregularEventViewController.emojiHeader" = "Эмоджи";
+
+// ScheduleSelectionViewController
+"ScheduleSelectionViewController.title" = "Расписание";
+"ScheduleSelectionViewController.button" = "Готово";
+
+// Длинные названия дней недели
+ "LongName.monday" = "понедельник";
+ "LongName.tuesday" = "вторник";
+ "LongName.wednesday" = "среда";
+ "LongName.thursday" = "четверг";
+ "LongName.friday" = "пятница";
+ "LongName.saturday" = "суббота";
+ "LongName.sunday" = "воскресенье";
+ // Короткие названия дней недели
+ "ShortName.monday" = "ПН";
+ "ShortName.tuesday" = "ВТ";
+ "ShortName.wednesday" = "СР";
+ "ShortName.thursday" = "ЧТ";
+ "ShortName.friday" = "ПТ";
+ "ShortName.saturday" = "СБ";
+ "ShortName.sunday" = "ВС";
+
+// CategorySelectionViewController
+"CategorySelectionViewController.title" = "Категория";
+"CategorySelectionViewController.questionLabel" = "Привычки и события можно объединить по смыслу";
+"CategorySelectionViewController.button" = "Добавить категорию";
+
+
+//NewCategoryViewController
+"NewCategoryViewController.title" = "Новая категория";
+"NewCategoryViewController.search" = "Введите название категории";
+"NewCategoryViewController.button" = "Готово";
+

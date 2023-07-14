@@ -12,7 +12,7 @@ final class ScheduleSelectionViewController: UIViewController {
     // MARK: - Свойства
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = NSLocalizedString("ScheduleSelectionViewController.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -31,7 +31,7 @@ final class ScheduleSelectionViewController: UIViewController {
     let doneButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .black
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("ScheduleSelectionViewController.button", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -86,7 +86,7 @@ extension ScheduleSelectionViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        scheduleCell.title.text = daysOfWeek[indexPath.section].rawValue
+        scheduleCell.title.text = daysOfWeek[indexPath.section].localizedString
         return scheduleCell
     }
     

@@ -19,7 +19,7 @@ final class StatisticsViewController: UIViewController {
     // MARK: - Components
     
     private lazy var placeholderView: UIView = {
-        let message = "Анализировать пока нечего"
+        let message = NSLocalizedString("StatisticsViewController.placeholderTitle", comment: "")
         let imageName = "statsPlaceholder"
         guard let image = UIImage(named: imageName) else {
             fatalError("Failed to load image: \(imageName)")
@@ -50,7 +50,7 @@ final class StatisticsViewController: UIViewController {
             navigationBar.titleTextAttributes = attributes
             
             let titleLabel = UILabel()
-            titleLabel.text = "Статистика"
+            titleLabel.text = NSLocalizedString( "StatisticsViewController.title", comment: "")
             titleLabel.font = boldFont
             titleLabel.sizeToFit()
             

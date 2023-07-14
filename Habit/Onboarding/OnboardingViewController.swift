@@ -12,9 +12,10 @@ final class OnboardingViewController: UIPageViewController {
     private var pages: [UIViewController] = []
     
     private let messages = [
-        (text: "Отслеживайте только то, что хотите", image: "onboarding1"),
-        (text: "Даже если это\nне литры воды и йога", image: "onboarding2")
+        (text: NSLocalizedString("onboarding.message1", comment: ""), image: "onboarding1"),
+        (text: NSLocalizedString("onboarding.message2", comment: ""), image: "onboarding2")
     ]
+
     
     private var isSwitchingPages = false
     private var selectedPage: Int? {
@@ -77,7 +78,7 @@ final class OnboardingViewController: UIPageViewController {
         button.backgroundColor = .black
         button.layer.cornerRadius = 16
         let font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("OnboardingViewController.button", comment: ""), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.titleLabel?.font = font
         
@@ -186,9 +187,7 @@ private extension OnboardingViewController {
     @objc func buttonTapped() {
         let tabBar = MainTabBarViewController()
         tabBar.modalPresentationStyle = .fullScreen
-        //                 tabBar.modalTransitionStyle = .crossDissolve
         present(tabBar, animated: true)
-        //        dismiss(animated: true)
     }
 }
 

@@ -31,9 +31,9 @@ final class MainTabBarViewController: UITabBarController {
     private func setupTabBar() {
         tabBar.backgroundColor = .white
         let trackers = TrackersViewController() //первая вкладка "Трекеры"
-        trackers.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(systemName: "record.circle.fill"), tag: 0)
+        trackers.tabBarItem = UITabBarItem(title: NSLocalizedString( "TrackersViewController.title", comment: ""), image: UIImage(systemName: "record.circle.fill"), tag: 0)
         let statistics = StatisticsViewController() //вторая вкладка "Статистика"
-        statistics.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(systemName: "hare.fill"), tag: 1)
+        statistics.tabBarItem = UITabBarItem(title: NSLocalizedString( "StatisticsViewController.title", comment: ""), image: UIImage(systemName: "hare.fill"), tag: 1)
         viewControllers = [trackers, statistics]
         
         tabBar.layer.shadowColor = UIColor.black.cgColor

@@ -51,7 +51,7 @@ class TrackersViewController: UIViewController {
     
     let trackersLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("TrackersViewController.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -64,7 +64,7 @@ class TrackersViewController: UIViewController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.calendar = Calendar(identifier: .iso8601)
         datePicker.maximumDate = Date()
-        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.locale = Locale.current
         datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
         return datePicker
     }()
@@ -77,7 +77,7 @@ class TrackersViewController: UIViewController {
     
     let questionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("TrackersViewController.whatWouldYouLikeToTrack", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -95,7 +95,7 @@ class TrackersViewController: UIViewController {
     
     let searchBar: UISearchBar = {
         let search = UISearchBar()
-        search.placeholder = "Поиск"
+        search.placeholder = NSLocalizedString("TrackersViewController.searchBar", comment: "")
         search.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         search.translatesAutoresizingMaskIntoConstraints = false
         return search

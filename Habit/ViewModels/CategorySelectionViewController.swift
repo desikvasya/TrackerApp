@@ -44,7 +44,7 @@ final class CategorySelectionViewController: UIViewController {
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("CategorySelectionViewController.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -58,10 +58,7 @@ final class CategorySelectionViewController: UIViewController {
     
     let questionLabel: UILabel = {
         let label = UILabel()
-        label.text = """
-        Привычки и события можно
-        объединить по смыслу
-        """
+        label.text = NSLocalizedString("CategorySelectionViewController.questionLabel", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
         label.textAlignment = .center
@@ -72,7 +69,7 @@ final class CategorySelectionViewController: UIViewController {
     let addCategoryButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .black
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("CategorySelectionViewController.button", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.translatesAutoresizingMaskIntoConstraints = false
