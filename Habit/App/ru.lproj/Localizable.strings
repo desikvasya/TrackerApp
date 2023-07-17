@@ -8,7 +8,7 @@
 /// TrackersViewController
 "TrackersViewController.title" = "Трекеры";
 "TrackersViewController.search" = "Поиск";
-"TrackersViewController.whatWeWillTrace" = "Что будем отслеживать?";
+"TrackersViewController.whatWouldYouLikeToTrack" = "Что будем отслеживать?";
 "TrackersViewController.searchBar" = "Поиск";
 
 /// StatisticsViewController

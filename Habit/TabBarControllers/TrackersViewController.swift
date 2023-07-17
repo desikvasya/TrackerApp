@@ -147,6 +147,8 @@ class TrackersViewController: UIViewController {
             stackView.isHidden = true
             trackersCollection.isHidden = false
         }
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        trackersCollection.addGestureRecognizer(longPressGestureRecognizer)
     }
     
     // MARK: - Настройка свойств, жестов и нотификаций
@@ -209,6 +211,31 @@ class TrackersViewController: UIViewController {
         updateCollection()
         hideCollection()
         trackersCollection.reloadData()
+    }
+    
+    // MARK: - Метод, вызываемый при удержании ячейки
+    
+    @objc
+    func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: trackersCollection)
+        if let indexPath = trackersCollection.indexPathForItem(at: touchPoint) {
+            let interaction = UIContextMenuInteraction(delegate: self)
+            let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell
+            cell?.viewBackground.addInteraction(interaction)        }
+    }
+    
+    func showMenuForCell(at indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "Меню", message: "Выберите действие", preferredStyle: .actionSheet)
+        let action1 = UIAlertAction(title: "Удалить", style: .destructive) { (action) in
+            let cell = self.trackersCollection.cellForItem(at: indexPath) as? TrackerCell
+            let id = self.localTrackers[indexPath.section].trackers[indexPath.row].id
+            self.dataProvider.deleteTracker(id: id)
+            self.datePickerValueChanged(sender: self.datePicker)
+        }
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        alertController.addAction(action1)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - Метод, вызываемый когда меняется дата в Date Picker
@@ -378,5 +405,72 @@ extension TrackersViewController {
         } else if dateFormat == "yyyy/MM/dd" {
             dateString = dateFormatterString
         }
+    }
+}
+
+// MARK: - Расширение для UIContextMenuInteractionDelegate
+extension TrackersViewController: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: location) else {
+            return nil
+        }
+        
+        let configuration = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            let deleteAction = UIAction(
+                title: NSLocalizedString("Удалить", comment: ""),
+                attributes: .destructive
+            ) { [weak self] _ in
+                self?.showDeleteConfirmation(for: indexPath)
+            }
+            
+            return UIMenu(
+                title: "",
+                children: [deleteAction]
+            )
+        }
+        
+        return configuration
+    }
+    
+    private func showDeleteConfirmation(for indexPath: IndexPath) {
+        let alertController = UIAlertController(
+            title: NSLocalizedString("Удалить", comment: ""),
+            message: NSLocalizedString("Вы действительно хотите удалить трекер?", comment: ""),
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("Отмена", comment: ""),
+            style: .cancel,
+            handler: nil
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: NSLocalizedString("Удалить", comment: ""),
+            style: .destructive
+        ) { [weak self] _ in
+            self?.deleteTracker(at: indexPath)
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    private func deleteTracker(at indexPath: IndexPath) {
+        let tracker = localTrackers[indexPath.section].trackers[indexPath.row]
+        let cell = self.trackersCollection.cellForItem(at: indexPath) as? TrackerCell
+        let id = self.localTrackers[indexPath.section].trackers[indexPath.row].id
+        self.dataProvider.deleteTracker(id: id)
+        self.datePickerValueChanged(sender: self.datePicker)
+        
     }
 }
