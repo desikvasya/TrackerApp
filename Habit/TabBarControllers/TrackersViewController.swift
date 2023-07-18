@@ -44,7 +44,7 @@ class TrackersViewController: UIViewController {
     let plusButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 19, height: 18))
         button.setImage(UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)), for: .normal)
-        button.tintColor = UIColor(named: "AnyColor")
+        button.tintColor = UIColor(named: "PlusColor")
         button.addTarget(nil, action: #selector(plusTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

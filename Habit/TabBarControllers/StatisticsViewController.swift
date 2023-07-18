@@ -31,7 +31,7 @@ final class StatisticsViewController: UIViewController {
     // MARK: - Appearance
     
     private func addPlaceholder() {
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "AnyColor")
         view.addSubview(placeholderView)
         
         let safeArea = view.safeAreaLayoutGuide
@@ -52,6 +52,7 @@ final class StatisticsViewController: UIViewController {
             let titleLabel = UILabel()
             titleLabel.text = NSLocalizedString( "StatisticsViewController.title", comment: "")
             titleLabel.font = boldFont
+            titleLabel.textColor = UIColor(named: "PlusColor")
             titleLabel.sizeToFit()
             
             let containerView = UIView()
