@@ -37,13 +37,14 @@ class TrackersViewController: UIViewController {
             return layout
         }()
         collection.collectionViewLayout = layout
+        collection.backgroundColor = UIColor(named: "AnyColor")
         return collection
     }()
     
     let plusButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 19, height: 18))
         button.setImage(UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)), for: .normal)
-        button.tintColor = .black
+        button.tintColor = UIColor(named: "AnyColor")
         button.addTarget(nil, action: #selector(plusTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -121,7 +122,7 @@ class TrackersViewController: UIViewController {
     // MARK: - Настройка внешнего вида
     private func setupView() {
         datePickerValueChanged(sender: datePicker)
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "AnyColor")
         NSLayoutConstraint.activate([
             plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 13),
             plusButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),

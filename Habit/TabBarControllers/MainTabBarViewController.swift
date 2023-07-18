@@ -29,7 +29,7 @@ final class MainTabBarViewController: UITabBarController {
     
     // MARK: - Настройка внешнего вида
     private func setupTabBar() {
-        tabBar.backgroundColor = .white
+        tabBar.backgroundColor = UIColor(named: "AnyColor")
         let trackers = TrackersViewController() //первая вкладка "Трекеры"
         trackers.tabBarItem = UITabBarItem(title: NSLocalizedString( "TrackersViewController.title", comment: ""), image: UIImage(systemName: "record.circle.fill"), tag: 0)
         let statistics = StatisticsViewController() //вторая вкладка "Статистика"
