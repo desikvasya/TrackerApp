@@ -78,3 +78,10 @@
 "NewCategoryViewController.search" = "Введите название категории";
 "NewCategoryViewController.button" = "Готово";
 
+/// UIAlertController при нажатии на ячейку коллекции
+"Touch.delete" = "Удалить";
+"Touch.cancel" = "Отмена";
+"Touch.title" = "Меню";
+"Touch.description" = "Выберите действие";
+"Touch.pin" = "Закрепить";
+"Touch.unpin" = "Открепить";

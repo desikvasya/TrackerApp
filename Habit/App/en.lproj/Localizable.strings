@@ -78,3 +78,12 @@
 "NewCategoryViewController.title" = "New category";
 "NewCategoryViewController.search" = "Enter the name of category";
 "NewCategoryViewController.button" = "Continue";
+
+
+/// UIAlertController при нажатии на ячейку коллекции
+"Touch.delete" = "Delete";
+"Touch.cancel" = "Cancel";
+"Touch.title" = "Menu";
+"Touch.description" = "Select an action";
+"Touch.pin" = "Pin";
+"Touch.unpin" = "Unpin";

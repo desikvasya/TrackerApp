@@ -147,8 +147,8 @@ class TrackersViewController: UIViewController {
             stackView.isHidden = true
             trackersCollection.isHidden = false
         }
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
-        trackersCollection.addGestureRecognizer(longPressGestureRecognizer)
+        let contextMenuInteraction = UIContextMenuInteraction(delegate: self)
+        trackersCollection.addInteraction(contextMenuInteraction)
     }
     
     // MARK: - Настройка свойств, жестов и нотификаций
@@ -222,20 +222,6 @@ class TrackersViewController: UIViewController {
             let interaction = UIContextMenuInteraction(delegate: self)
             let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell
             cell?.viewBackground.addInteraction(interaction)        }
-    }
-    
-    func showMenuForCell(at indexPath: IndexPath) {
-        let alertController = UIAlertController(title: "Меню", message: "Выберите действие", preferredStyle: .actionSheet)
-        let action1 = UIAlertAction(title: "Удалить", style: .destructive) { (action) in
-            let cell = self.trackersCollection.cellForItem(at: indexPath) as? TrackerCell
-            let id = self.localTrackers[indexPath.section].trackers[indexPath.row].id
-            self.dataProvider.deleteTracker(id: id)
-            self.datePickerValueChanged(sender: self.datePicker)
-        }
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
-        alertController.addAction(action1)
-        alertController.addAction(cancelAction)
-        present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - Метод, вызываемый когда меняется дата в Date Picker
@@ -419,58 +405,103 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             return nil
         }
         
+        let tappedID = localTrackers[indexPath.section].trackers[indexPath.row].id
+        let oldCategory = localTrackers[indexPath.section].label
+        let eventToPin = localTrackers[indexPath.section].trackers[indexPath.row]
+        
         let configuration = UIContextMenuConfiguration(
             identifier: nil,
             previewProvider: nil
-        ) { _ in
-            let deleteAction = UIAction(
-                title: NSLocalizedString("Удалить", comment: ""),
-                attributes: .destructive
-            ) { [weak self] _ in
-                self?.showDeleteConfirmation(for: indexPath)
+        ) { [weak self] _ in
+            let pinnedCategory = NSLocalizedString("TrackersViewController.pinned", comment: "Закреплённые")
+            
+            let trimmedOldCategory = oldCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedPinnedCategory = pinnedCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            var pinActionTitle = ""
+            
+            if trimmedOldCategory == trimmedPinnedCategory {
+                pinActionTitle = NSLocalizedString("Touch.unpin", comment: "")
+            } else {
+                pinActionTitle = NSLocalizedString("Touch.pin", comment: "")
             }
             
-            return UIMenu(
-                title: "",
-                children: [deleteAction]
-            )
+            let pinAction = UIAction(
+                title: pinActionTitle,
+                image: nil
+            ) { [weak self] _ in
+                if oldCategory == pinnedCategory {
+                    // Unpin the event
+                    self?.dataProvider.unpinEvent(id: tappedID)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                } else {
+                    // Pin the event
+                    self?.dataProvider.pinEvent(oldCategory: oldCategory, id: eventToPin.id)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                }
+            }
+            
+            
+            let editAction = UIAction(
+                title: "Редактировать",
+                image: nil
+            ) { [weak self] _ in
+                // Handle edit action here
+            }
+            
+            
+            let deleteAction = UIAction(
+                title: "Удалить",
+                image: nil
+            ) { [weak self] _ in
+                let alertController = UIAlertController(title: "", message: "Уверены, что хотите удалить трекер?", preferredStyle: .actionSheet)
+                let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { (_) in
+                    self?.dataProvider.deleteTracker(id: tappedID)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                }
+                let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
+                alertController.addAction(deleteAction)
+                alertController.addAction(cancelAction)
+                self?.present(alertController, animated: true, completion: nil)
+            }
+            deleteAction.attributes = .destructive
+            
+            
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
         
         return configuration
     }
     
-    private func showDeleteConfirmation(for indexPath: IndexPath) {
-        let alertController = UIAlertController(
-            title: NSLocalizedString("Удалить", comment: ""),
-            message: NSLocalizedString("Вы действительно хотите удалить трекер?", comment: ""),
-            preferredStyle: .alert
-        )
-        
-        let cancelAction = UIAlertAction(
-            title: NSLocalizedString("Отмена", comment: ""),
-            style: .cancel,
-            handler: nil
-        )
-        
-        let deleteAction = UIAlertAction(
-            title: NSLocalizedString("Удалить", comment: ""),
-            style: .destructive
-        ) { [weak self] _ in
-            self?.deleteTracker(at: indexPath)
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: interaction.location(in: trackersCollection)),
+              let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell else {
+            return nil
         }
         
-        alertController.addAction(cancelAction)
-        alertController.addAction(deleteAction)
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
         
-        present(alertController, animated: true, completion: nil)
+        let targetedPreview = UITargetedPreview(view: cell.viewBackground, parameters: parameters)
+        return targetedPreview
     }
     
-    private func deleteTracker(at indexPath: IndexPath) {
-        let tracker = localTrackers[indexPath.section].trackers[indexPath.row]
-        let cell = self.trackersCollection.cellForItem(at: indexPath) as? TrackerCell
-        let id = self.localTrackers[indexPath.section].trackers[indexPath.row].id
-        self.dataProvider.deleteTracker(id: id)
-        self.datePickerValueChanged(sender: self.datePicker)
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: interaction.location(in: trackersCollection)),
+              let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell else {
+            return nil
+        }
         
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
+        
+        let targetedPreview = UITargetedPreview(view: cell.viewBackground, parameters: parameters)
+        return targetedPreview
     }
 }

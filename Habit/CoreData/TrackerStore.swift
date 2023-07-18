@@ -47,4 +47,59 @@ final class TrackerStore {
             print("failed to save")
         }
     }
+    
+    // MARK: - методы закрепления/открепления трекеров
+
+    func pinEvent(oldCategory: String, id: UUID, context: NSManagedObjectContext) {
+        let pinnedTracker = PinnedTrackers(context: context)
+        pinnedTracker.pinnedTrackerID = id
+        pinnedTracker.pinnedTrackerCategory = oldCategory
+        let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
+        do {
+            let event = try context.fetch(eventRequest).first
+            let category = TrackerCategoryCoreData(context: context)
+            category.name = "Закреплённые"
+            event?.category = category
+            try context.save()
+        } catch {
+            print("Не удалось закрепить трекер")
+        }
+    }
+
+    
+    func unpinEvent(id: UUID, context: NSManagedObjectContext) -> String {
+        let request = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
+        request.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
+        do {
+            guard let result = try context.fetch(request).first?.pinnedTrackerCategory else { return "" }
+            let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+            eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
+            let event = try context.fetch(eventRequest).first
+            let categoryRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+            categoryRequest.predicate = NSPredicate(format: "name == %@", result)
+            let category = try context.fetch(categoryRequest).first
+            event?.category = category
+            context.delete(try context.fetch(request).first ?? PinnedTrackers())
+            try context.save()
+            return result
+        } catch {
+            print("Не удалось открепить трекер")
+        }
+        return ""
+    }
+    
+    func isTrackerPinned(id: UUID, context: NSManagedObjectContext) -> Bool {
+        let request = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
+        request.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
+        do {
+            let result = try context.fetch(request)
+            return !result.isEmpty
+        } catch {
+            print("Failed to fetch pinned trackers")
+        }
+        return false
+    }
+
+
 }

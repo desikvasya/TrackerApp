@@ -54,6 +54,20 @@ final class DataProvider: NSObject {
         trackerStore.deleteTracker(id: inID, context: context)
     }
     
+    // MARK: - Методы, закрепления/ открепления трекера
+
+    func pinEvent(oldCategory: String, id: UUID) {
+        trackerStore.pinEvent(oldCategory: oldCategory, id: id, context: context)
+    }
+    
+    func unpinEvent(id: UUID) -> String {
+        return trackerStore.unpinEvent(id: id, context: context)
+    }
+    
+    func isTrackerPinned(id: UUID) -> Bool {
+        return trackerStore.isTrackerPinned(id: id, context: context)
+    }
+    
     // MARK: - Метод, добавляющий +1 к счётчику выполненных трекеров
     func addRecord(id: UUID, day: String) {
         trackerRecordStore.addRecord(id: id, day: day, context: context)
