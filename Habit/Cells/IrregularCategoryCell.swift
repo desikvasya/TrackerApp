@@ -59,6 +59,7 @@ final class IrregularCategoryCell: UITableViewCell {
         ])
     }
     
+    
     // MARK: - Изменение констрейнтов и свойств ячейки с категорией (при срабатывании нотификации)
     @objc
     private func showCategory() {

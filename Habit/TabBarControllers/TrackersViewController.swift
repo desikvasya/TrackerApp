@@ -419,19 +419,14 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             let trimmedOldCategory = oldCategory.trimmingCharacters(in: .whitespacesAndNewlines)
             let trimmedPinnedCategory = pinnedCategory.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            var pinActionTitle = ""
-            
-            if trimmedOldCategory == trimmedPinnedCategory {
-                pinActionTitle = NSLocalizedString("Touch.unpin", comment: "")
-            } else {
-                pinActionTitle = NSLocalizedString("Touch.pin", comment: "")
-            }
+            let isPinned = self?.dataProvider.isTrackerPinned(id: tappedID) ?? false
+            let pinActionTitle = isPinned ? NSLocalizedString("Touch.unpin", comment: "") : NSLocalizedString("Touch.pin", comment: "")
             
             let pinAction = UIAction(
                 title: pinActionTitle,
                 image: nil
             ) { [weak self] _ in
-                if oldCategory == pinnedCategory {
+                if isPinned {
                     // Unpin the event
                     self?.dataProvider.unpinEvent(id: tappedID)
                     self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
@@ -443,24 +438,57 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
             }
             
             
-            let editAction = UIAction(
-                title: "Редактировать",
-                image: nil
-            ) { [weak self] _ in
-                // Handle edit action here
+//            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) { [weak self] _ in
+//                guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
+//                      let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],
+//                      let oldCategory = self?.localTrackers[indexPath.section].label else {
+//                    return
+//                }
+//
+//                if eventToEdit.day == nil {
+//                    let showEditView = NewIrregularEventViewController(categoryViewModel: CategoryViewModel())
+//                    showEditView.eventToEdit = eventToEdit
+//                    showEditView.categoryToEdit = oldCategory
+//                    self?.present(showEditView, animated: true, completion: nil)
+//                } else {
+//                    let showEditView = NewHabitViewController(categoryViewModel: CategoryViewModel())
+//                    showEditView.eventToEdit = eventToEdit
+//                    showEditView.categoryToEdit = oldCategory
+//                    self?.present(showEditView, animated: true, completion: nil)
+//                }
+//            }
+            
+            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) { [weak self] _ in
+                guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
+                      let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],
+                      let oldCategory = self?.localTrackers[indexPath.section].label else {
+                    return
+                }
+                
+                if eventToEdit.day == nil {
+                    let showEditView = NewIrregularEventViewController(categoryViewModel: CategoryViewModel())
+                    showEditView.eventToEdit = eventToEdit
+                    showEditView.categoryToEdit = oldCategory
+                    self?.present(showEditView, animated: true, completion: nil)
+                } else {
+                    let showEditView = NewHabitViewController(categoryViewModel: CategoryViewModel())
+                    showEditView.eventToEdit = eventToEdit
+                    showEditView.categoryToEdit = oldCategory
+                    self?.present(showEditView, animated: true, completion: nil)
+                }
             }
-            
-            
+
+
             let deleteAction = UIAction(
-                title: "Удалить",
+                title: NSLocalizedString("Touch.delete", comment: ""),
                 image: nil
             ) { [weak self] _ in
-                let alertController = UIAlertController(title: "", message: "Уверены, что хотите удалить трекер?", preferredStyle: .actionSheet)
-                let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { (_) in
+                let alertController = UIAlertController(title: "", message: NSLocalizedString("Alert.message", comment: ""), preferredStyle: .actionSheet)
+                let deleteAction = UIAlertAction(title: NSLocalizedString("Alert.delete", comment: ""), style: .destructive) { (_) in
                     self?.dataProvider.deleteTracker(id: tappedID)
                     self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
                 }
-                let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
+                let cancelAction = UIAlertAction(title: NSLocalizedString("Alert.cancel", comment: ""), style: .cancel, handler: nil)
                 alertController.addAction(deleteAction)
                 alertController.addAction(cancelAction)
                 self?.present(alertController, animated: true, completion: nil)

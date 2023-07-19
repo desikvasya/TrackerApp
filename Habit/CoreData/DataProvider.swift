@@ -68,6 +68,10 @@ final class DataProvider: NSObject {
         return trackerStore.isTrackerPinned(id: id, context: context)
     }
     
+    func editEvent(id: UUID, event: Event, category: String) {
+        trackerStore.editEvent(id: id, event: event, category: category, context: context)
+    }
+    
     // MARK: - Метод, добавляющий +1 к счётчику выполненных трекеров
     func addRecord(id: UUID, day: String) {
         trackerRecordStore.addRecord(id: id, day: day, context: context)

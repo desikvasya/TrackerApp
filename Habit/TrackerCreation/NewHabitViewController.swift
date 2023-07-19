@@ -11,11 +11,15 @@ final class NewHabitViewController: UIViewController {
     
     let dataProvider = DataProvider()
     
-    private let categoryViewModel: CategoryViewModel
+    var eventToEdit: Event?
+    var categoryToEdit: String?
     
+    private let categoryViewModel: CategoryViewModel
     
     init(categoryViewModel: CategoryViewModel) {
         self.categoryViewModel = categoryViewModel
+        self.eventToEdit = nil
+        self.categoryToEdit = nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -126,6 +130,10 @@ final class NewHabitViewController: UIViewController {
         super.viewDidLoad()
         setupProperties()
         setupView()
+
+        if let event = eventToEdit {
+            setupEdit(with: event)
+        }
     }
     
     // MARK: - Настройка внешнего вида
@@ -156,7 +164,7 @@ final class NewHabitViewController: UIViewController {
             secondStack.leadingAnchor.constraint(equalTo: scroll.leadingAnchor, constant: 28),
             secondStack.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
             secondStack.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 24),
-        ])
+        ])    
     }
     
     // MARK: - Настройка свойств, жестов и нотификаций
@@ -195,6 +203,31 @@ final class NewHabitViewController: UIViewController {
         }
     }
     
+    // MARK: - Редактирование привычки
+
+    private func setupEdit(with event: Event) {
+        titleLabel.text = NSLocalizedString("NewHabitViewController.editTitle", comment: "")
+        enterNameTextField.text = event.name
+        categoryViewModel.didChooseCategory(name: categoryToEdit ?? "")
+
+        if let emojiIndex = emojiCollectionData.firstIndex(of: event.emoji) {
+            let indexPath = IndexPath(row: emojiIndex, section: 0)
+            if emojiIndex < emojiCollection.numberOfItems(inSection: 0) {
+                emojiCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+
+        if let colorIndex = colorCollectionData.firstIndex(where: { $0 == event.color }) {
+            let indexPath = IndexPath(row: colorIndex, section: 0)
+            if colorIndex < colorCollection.numberOfItems(inSection: 0) {
+                colorCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+
+        activateButton()
+    }
+
+    
     // MARK: - Методы, вызываемые при нажатии кнопок
     // MARK: Метод, вызываемый при нажатии на кнопку "Отмена"
     @objc
@@ -203,8 +236,7 @@ final class NewHabitViewController: UIViewController {
     }
     
     // MARK: Метод, вызываемый при нажатии на кнопку "Создать"
-    @objc
-    private func create() {
+    @objc private func create() {
         let name = enterNameTextField.text ?? ""
         let category = categoryViewModel.chosenCategory
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
@@ -212,7 +244,19 @@ final class NewHabitViewController: UIViewController {
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
         let color = colorCollectionData[colorIndex?.row ?? 0]
         let day = selectedDays
-        let event = Event(name: name, emoji: emoji, color: color, day: day)
+        
+        if var eventToEdit = eventToEdit {
+            // Edit existing tracker
+            eventToEdit.name = name
+            eventToEdit.emoji = emoji
+            eventToEdit.color = color
+            eventToEdit.day = day
+            dataProvider.editEvent(id: eventToEdit.id, event: eventToEdit, category: category)
+        } else {
+            // Create new tracker
+            let event = Event(name: name, emoji: emoji, color: color, day: day)
+            dataProvider.addTracker(event: event, category: category)
+        }
         
         let tabBar = MainTabBarViewController()
         tabBar.modalPresentationStyle = .fullScreen
@@ -221,8 +265,8 @@ final class NewHabitViewController: UIViewController {
         categoryViewModel.didChooseCategory(name: "")
         selectedDays = []
         shortSelectedDays = []
-        dataProvider.addTracker(event: event, category: category)
     }
+
     
     // MARK: Метод, меняющий первую строку таблицы ("категория") при срабатывании нотификации
     @objc

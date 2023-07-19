@@ -8,20 +8,25 @@
 import UIKit
 
 final class NewIrregularEventViewController: UIViewController {
-    
+
     let dataProvider = DataProvider()
-    
+
+    var eventToEdit: Event?
+    var categoryToEdit: String?
+
     private let categoryViewModel: CategoryViewModel
-    
+
     init(categoryViewModel: CategoryViewModel) {
         self.categoryViewModel = categoryViewModel
+        self.eventToEdit = nil
+        self.categoryToEdit = nil
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Свойства
     private let colorCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -30,7 +35,7 @@ final class NewIrregularEventViewController: UIViewController {
         collection.register(CollectionHeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         return collection
     }()
-    
+
     private let emojiCollection: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +43,7 @@ final class NewIrregularEventViewController: UIViewController {
         collection.register(CollectionHeaderSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         return collection
     }()
-    
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("NewIrregularEventViewController.title", comment: "")
@@ -46,7 +51,7 @@ final class NewIrregularEventViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     private let enterNameTextField: UITextField = {
         let field = UITextField()
         field.placeholder = NSLocalizedString("NewIrregularEventViewController.placeholder", comment: "")
@@ -58,7 +63,7 @@ final class NewIrregularEventViewController: UIViewController {
         field.leftViewMode = .always
         return field
     }()
-    
+
     private let categoriesTable: UITableView = {
         let table = UITableView()
         table.register(IrregularCategoryCell.self, forCellReuseIdentifier: "category")
@@ -66,7 +71,7 @@ final class NewIrregularEventViewController: UIViewController {
         table.separatorStyle = .none
         return table
     }()
-    
+
     private let firstStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -76,7 +81,7 @@ final class NewIrregularEventViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-    
+
     private let cancelButton: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("NewIrregularEventViewController.cancelButton", comment: ""), for: .normal)
@@ -88,7 +93,7 @@ final class NewIrregularEventViewController: UIViewController {
         button.addTarget(nil, action: #selector(cancel), for: .touchUpInside)
         return button
     }()
-    
+
     private let createButton: UIButton = {
         let button = UIButton()
         button.setTitle(NSLocalizedString("NewIrregularEventViewController.createButton", comment: ""), for: .normal)
@@ -100,7 +105,7 @@ final class NewIrregularEventViewController: UIViewController {
         button.isEnabled = false
         return button
     }()
-    
+
     private let secondStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -110,21 +115,25 @@ final class NewIrregularEventViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-    
+
     private let scroll: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.indicatorStyle = .white
         return scroll
     }()
-    
+
     // MARK: - Метод жизненного цикла viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupProperties()
         setupView()
+        
+        if let event = eventToEdit {
+            setupEdit(with: event)
+        }
     }
-    
+
     // MARK: - Настройка внешнего вида
     private func setupView() {
         view.backgroundColor = .white
@@ -166,6 +175,10 @@ final class NewIrregularEventViewController: UIViewController {
             secondStack.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
             secondStack.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 24),
         ])
+//        if eventToEdit != nil {
+//            setupEdit(with: eventToEdit!)
+//        }
+
         colorCollection.delegate = self
         colorCollection.dataSource = self
         emojiCollection.delegate = self
@@ -174,7 +187,7 @@ final class NewIrregularEventViewController: UIViewController {
         categoriesTable.delegate = self
         enterNameTextField.delegate = self
     }
-    
+
     // MARK: - Настройка свойств, жестов и нотификаций
     private func setupProperties() {
         categoryViewModel.didChooseCategory(name: "")
@@ -183,6 +196,31 @@ final class NewIrregularEventViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
         NotificationCenter.default.addObserver(self, selector: #selector(showCategory), name: Notification.Name("category_changed"), object: nil)
     }
+
+    // MARK: - Редактирование привычки
+
+    private func setupEdit(with event: Event) {
+        titleLabel.text = NSLocalizedString("NewIrregularEventViewController.editTitle", comment: "")
+        enterNameTextField.text = event.name
+        categoryViewModel.didChooseCategory(name: categoryToEdit ?? "")
+
+        if let emojiIndex = emojiCollectionData.firstIndex(of: event.emoji) {
+            let indexPath = IndexPath(row: emojiIndex, section: 0)
+            if emojiIndex < emojiCollection.numberOfItems(inSection: 0) {
+                emojiCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+
+        if let colorIndex = colorCollectionData.firstIndex(where: { $0 == event.color }) {
+            let indexPath = IndexPath(row: colorIndex, section: 0)
+            if colorIndex < colorCollection.numberOfItems(inSection: 0) {
+                colorCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+
+        activateButton()
+    }
+
     
     // MARK: - Методы, вызываемые при нажатии кнопок
     // MARK: Метод, вызываемый при нажатии на кнопку "Отмена"
@@ -190,24 +228,34 @@ final class NewIrregularEventViewController: UIViewController {
     private func cancel() {
         dismiss(animated: true)
     }
-    
+
     // MARK: Метод, прячущий клавиатуру при нажатии вне её области
     @objc
     func dismissKeyboard() {
         enterNameTextField.resignFirstResponder()
     }
-    
+
     // MARK: Метод, вызываемый при нажатии на кнопку "Создать"
-    @objc
-    private func create() {
+    
+    @objc private func create() {
         let name = enterNameTextField.text ?? ""
         let category = categoryViewModel.chosenCategory
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
         let color = colorCollectionData[colorIndex?.row ?? 0]
-        let event = Event(name: name, emoji: emoji, color: color, day: nil)
         
+        if var eventToEdit = eventToEdit {
+            // Edit existing tracker
+            eventToEdit.name = name
+            eventToEdit.emoji = emoji
+            eventToEdit.color = color
+            dataProvider.editEvent(id: eventToEdit.id, event: eventToEdit, category: category)
+        } else {
+            // Create new tracker
+            let event = Event(name: name, emoji: emoji, color: color, day: nil)
+            dataProvider.addTracker(event: event, category: category)
+        }
         
         let tabBar = MainTabBarViewController()
         tabBar.modalPresentationStyle = .fullScreen
@@ -215,47 +263,52 @@ final class NewIrregularEventViewController: UIViewController {
         present(tabBar, animated: true)
         
         categoryViewModel.didChooseCategory(name: "")
-        dataProvider.addTracker(event: event, category: category)
     }
-    
+
+
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryViewModel.chosenCategory.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
-            createButton.backgroundColor = .black
-            createButton.isEnabled = true
-        }
+        let nameIsEmpty = enterNameTextField.text?.isEmpty ?? true
+        let categoryIsEmpty = categoryViewModel.chosenCategory.isEmpty
+        let emojiIsSelected = !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? true)
+        let colorIsSelected = !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? true)
+
+        createButton.isEnabled = !nameIsEmpty && !categoryIsEmpty && emojiIsSelected && colorIsSelected
+        createButton.backgroundColor = createButton.isEnabled ? .black : UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
     }
-    
+
     // MARK: Метод, обновлящий название выбранной категории при срабатывании нотификации
     @objc
     private func showCategory() {
         categoriesTable.reloadData()
         activateButton()
     }
-    
+
 }
 
 // MARK: - Расширение для UITextFieldDelegate
 extension NewIrregularEventViewController: UITextFieldDelegate {
-    
+
     // MARK: Метод, вызываемый при нажатии на "Return" на клавиатуре
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-    
+
     // MARK: Метод, используемый для проверки наличия текста в UITextField
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField.hasText {
+        if let text = textField.text, let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
             activateButton()
+            return !updatedText.isEmpty
         }
         return true
     }
-    
+
 }
 
 // MARK: - Расширение для UICollectionViewDataSource
 extension NewIrregularEventViewController: UICollectionViewDataSource {
-    
+
     // MARK: Метод, определяющий количество ячеек в секции коллекции
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == colorCollection {
@@ -264,7 +317,7 @@ extension NewIrregularEventViewController: UICollectionViewDataSource {
             return emojiCollectionData.count
         }
     }
-    
+
     // MARK: Метод создания и настройки ячейки для indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == colorCollection {
@@ -272,127 +325,140 @@ extension NewIrregularEventViewController: UICollectionViewDataSource {
                 fatalError("Unable to dequeue ColorCell")
             }
             cell.color.backgroundColor = colorCollectionData[indexPath.row]
+            if let eventColor = eventToEdit?.color, let cellColor = cell.color.backgroundColor,
+               UIColor.hexString(from: cellColor) == UIColor.hexString(from: eventColor) {
+                cell.layer.borderWidth = 3
+                cell.layer.borderColor = cell.color.backgroundColor?.cgColor.copy(alpha: 0.3)
+                cell.layer.cornerRadius = 8
+                cell.layer.masksToBounds = true
+            }
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else {
                 fatalError("Unable to dequeue EmojiCell")
             }
             cell.emojiLabel.text = emojiCollectionData[indexPath.row]
+            if cell.emojiLabel.text == eventToEdit?.emoji {
+                cell.isSelected = true
+                cell.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
+                cell.layer.cornerRadius = 16
+                cell.layer.masksToBounds = true
+            }
             return cell
         }
     }
-    
-    // MARK: Метод создания и настройки Supplementary View
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if collectionView == colorCollection {
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
-                fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+
+        // MARK: Метод создания и настройки Supplementary View
+        func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+            if collectionView == colorCollection {
+                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
+                    fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+                }
+                header.title.text = NSLocalizedString("NewIrregularEventViewController.colorHeader", comment: "")
+                return header
+            } else {
+                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
+                    fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+                }
+                header.title.text = NSLocalizedString("NewIrregularEventViewController.emojiHeader", comment: "")
+                return header
             }
-            header.title.text = NSLocalizedString("NewIrregularEventViewController.colorHeader", comment: "")
-            return header
-        } else {
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
-                fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
+        }
+    }
+    
+    // MARK: - Расширение для UICollectionViewDelegateFlowLayout
+    extension NewIrregularEventViewController: UICollectionViewDelegateFlowLayout {
+    
+        // MARK: Метод, определяющий размер элемента коллекции для indexPath
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            return CGSize(width: (view.bounds.width-56) / 6, height: 50)
+        }
+    
+        // MARK: Метод, определяющий минимальное расстояние между элементами в секции коллекции
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+            return 0
+        }
+    
+        // MARK: Метод, определяющий минимальное расстояние между строками элементов в секции коллекции
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+            return 0
+        }
+    
+        // MARK: Метод, определяющий размер заголовка секции
+        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+            return CGSize(width: collectionView.bounds.width, height: 40)
+        }
+    
+    }
+    
+    // MARK: - Расширение для UICollectionViewDelegate
+    extension NewIrregularEventViewController: UICollectionViewDelegate {
+    
+        // MARK: Метод, вызываемый при выборе ячейки коллекции
+        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+            if collectionView == colorCollection {
+                let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
+                cell?.layer.borderWidth = 3
+                cell?.layer.borderColor = cell?.color.backgroundColor?.cgColor.copy(alpha: 0.3)
+                cell?.layer.cornerRadius = 8
+                cell?.layer.masksToBounds = true
+                activateButton()
+            } else {
+                let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
+                cell?.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
+                cell?.layer.cornerRadius = 16
+                cell?.layer.masksToBounds = true
+                activateButton()
             }
-            header.title.text = NSLocalizedString("NewIrregularEventViewController.emojiHeader", comment: "")
-            return header
         }
-    }
-}
-
-// MARK: - Расширение для UICollectionViewDelegateFlowLayout
-extension NewIrregularEventViewController: UICollectionViewDelegateFlowLayout {
     
-    // MARK: Метод, определяющий размер элемента коллекции для indexPath
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (view.bounds.width-56) / 6, height: 50)
-    }
-    
-    // MARK: Метод, определяющий минимальное расстояние между элементами в секции коллекции
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    // MARK: Метод, определяющий минимальное расстояние между строками элементов в секции коллекции
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    // MARK: Метод, определяющий размер заголовка секции
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 40)
-    }
-    
-}
-
-// MARK: - Расширение для UICollectionViewDelegate
-extension NewIrregularEventViewController: UICollectionViewDelegate {
-    
-    // MARK: Метод, вызываемый при выборе ячейки коллекции
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == colorCollection {
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = cell?.color.backgroundColor?.cgColor.copy(alpha: 0.3)
-            cell?.layer.cornerRadius = 8
-            cell?.layer.masksToBounds = true
-            activateButton()
-        } else {
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
-            cell?.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
-            cell?.layer.cornerRadius = 16
-            cell?.layer.masksToBounds = true
-            activateButton()
+        // MARK: Метод, вызываемый при снятии выделения с ячейки коллекции
+        func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+            if collectionView == colorCollection {
+                let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
+                cell?.layer.borderColor = CGColor(gray: 0, alpha: 0)
+            } else {
+                let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
+                cell?.backgroundColor = UIColor.clear
+            }
         }
+    
     }
     
-    // MARK: Метод, вызываемый при снятии выделения с ячейки коллекции
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if collectionView == colorCollection {
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-            cell?.layer.borderColor = CGColor(gray: 0, alpha: 0)
-        } else {
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
-            cell?.backgroundColor = UIColor.clear
+    // MARK: - Расширение для UITableViewDataSource
+    extension NewIrregularEventViewController: UITableViewDataSource {
+    
+        // MARK: Метод, определяющий количество строк в секции таблицы
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return 1
         }
-    }
     
-}
-
-// MARK: - Расширение для UITableViewDataSource
-extension NewIrregularEventViewController: UITableViewDataSource {
-    
-    // MARK: Метод, определяющий количество строк в секции таблицы
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    // MARK: Метод создания и настройки ячейки таблицы
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "category", for: indexPath)
-        guard let categoryCell = cell as? IrregularCategoryCell else {
-            return UITableViewCell()
+        // MARK: Метод создания и настройки ячейки таблицы
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "category", for: indexPath)
+            guard let categoryCell = cell as? IrregularCategoryCell else {
+                return UITableViewCell()
+            }
+            categoryCell.title.text = NSLocalizedString("NewIrregularEventViewController.categoryCell.1", comment: "")
+            cell.selectionStyle = .none
+            categoryCell.categoryName.text = categoryViewModel.chosenCategory
+            return categoryCell
         }
-        categoryCell.title.text = NSLocalizedString("NewIrregularEventViewController.categoryCell.1", comment: "")
-        cell.selectionStyle = .none
-        categoryCell.categoryName.text = categoryViewModel.chosenCategory
-        return categoryCell
+    
     }
     
-}
-
-// MARK: - Расширение для UITableViewDelegate
-extension NewIrregularEventViewController: UITableViewDelegate {
+    // MARK: - Расширение для UITableViewDelegate
+    extension NewIrregularEventViewController: UITableViewDelegate {
     
-    // MARK: Метод, определяющий высоту строки таблицы
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 71
+        // MARK: Метод, определяющий высоту строки таблицы
+        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            return 71
+        }
+    
+        // MARK: Метод, вызываемый при нажатии на строку таблицы
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            let choiceOfCategoryViewController = CategorySelectionViewController(viewModel: categoryViewModel)
+            show(choiceOfCategoryViewController, sender: self)
+        }
+    
     }
-    
-    // MARK: Метод, вызываемый при нажатии на строку таблицы
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let choiceOfCategoryViewController = CategorySelectionViewController(viewModel: categoryViewModel)
-        show(choiceOfCategoryViewController, sender: self)
-    }
-    
-}

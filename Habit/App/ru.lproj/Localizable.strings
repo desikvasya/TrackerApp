@@ -10,6 +10,7 @@
 "TrackersViewController.search" = "Поиск";
 "TrackersViewController.whatWouldYouLikeToTrack" = "Что будем отслеживать?";
 "TrackersViewController.searchBar" = "Поиск";
+"TrackersViewController.pinned" = "Pinned";
 
 /// StatisticsViewController
 "StatisticsViewController.title" = "Статистика";
@@ -85,3 +86,14 @@
 "Touch.description" = "Выберите действие";
 "Touch.pin" = "Закрепить";
 "Touch.unpin" = "Открепить";
+"Touch.edit" = "Редактировать";
+"Alert.message" = "Уверены, что хотите удалить трекер?";
+"Alert.delete" = "Удалить";
+"Alert.cancel" = "Отменить";
+
+
+//
+"NewIrregularEventViewController.editTitle" = "Редактировать нерегулярное событие";
+"NewHabitViewController.editTitle" = "Редактировать привычку
+";
+

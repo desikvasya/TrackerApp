@@ -10,6 +10,7 @@
 "TrackersViewController.search" = "Search";
 "TrackersViewController.whatWouldYouLikeToTrack" = "What would you like to track?";
 "TrackersViewController.searchBar" = "Search";
+"TrackersViewController.pinned" = "Pinned";
 
 /// StatisticsViewController
 "StatisticsViewController.title" = "Statistics";
@@ -87,3 +88,12 @@
 "Touch.description" = "Select an action";
 "Touch.pin" = "Pin";
 "Touch.unpin" = "Unpin";
+"Touch.edit" = "Edit";
+"Alert.message" = "Are you sure that you want to delete this tracker?";
+"Alert.delete" = "Delete";
+"Alert.cancel" = "Cancel";
+
+
+//
+"NewIrregularEventViewController.editTitle" = "Edit event";
+"NewHabitViewController.editTitle" = "Edit habit";

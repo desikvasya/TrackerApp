@@ -51,23 +51,41 @@ final class TrackerStore {
     // MARK: - методы закрепления/открепления трекеров
 
     func pinEvent(oldCategory: String, id: UUID, context: NSManagedObjectContext) {
-        let pinnedTracker = PinnedTrackers(context: context)
-        pinnedTracker.pinnedTrackerID = id
-        pinnedTracker.pinnedTrackerCategory = oldCategory
-        let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
+        let pinnedTrackerRequest = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
+        pinnedTrackerRequest.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
+
         do {
-            let event = try context.fetch(eventRequest).first
-            let category = TrackerCategoryCoreData(context: context)
-            category.name = "Закреплённые"
-            event?.category = category
-            try context.save()
+            let existingPinnedTracker = try context.fetch(pinnedTrackerRequest).first
+
+            if existingPinnedTracker != nil {
+                return
+            }
+
+            let newPinnedTracker = PinnedTrackers(context: context)
+            newPinnedTracker.pinnedTrackerID = id
+            newPinnedTracker.pinnedTrackerCategory = oldCategory
+
+            let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+            eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
+
+            do {
+                let event = try context.fetch(eventRequest).first
+                let categoryRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+                categoryRequest.predicate = NSPredicate(format: "name == %@", "Закреплённые")
+                let category = try context.fetch(categoryRequest).first ?? TrackerCategoryCoreData(context: context)
+                category.name = "Закреплённые"
+//                category.name = NSLocalizedString("TrackersViewController.pinned", comment: "")
+
+                event?.category = category
+                try context.save()
+            } catch {
+                print("Не удалось закрепить трекер")
+            }
         } catch {
-            print("Не удалось закрепить трекер")
+            print("Не удалось проверить закрепление трекера")
         }
     }
 
-    
     func unpinEvent(id: UUID, context: NSManagedObjectContext) -> String {
         let request = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
         request.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
@@ -100,6 +118,35 @@ final class TrackerStore {
         }
         return false
     }
+    
+//     Метод редактирования трекера
 
+    func editEvent(id: UUID, event: Event, category: String, context: NSManagedObjectContext) {
+        let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
+        do {
+            let eventResult = try context.fetch(eventRequest).first
+            let color = UIColor.hexString(from: event.color)
+            eventResult?.color = color
+            let day = event.day?.joined(separator: " ")
+            eventResult?.day = day
+            let emoji = event.emoji
+            eventResult?.emoji = emoji
+            let name = event.name
+            eventResult?.name = name
+            let categoryRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+            categoryRequest.predicate = NSPredicate(format: "name == %@", category)
+            var categoryResult = try context.fetch(categoryRequest).first
+            if categoryResult == nil {
+                categoryResult = TrackerCategoryCoreData(context: context)
+                categoryResult?.name = category
+            }
+            eventResult?.category = categoryResult
+            try context.save()
+        } catch {
+            print("Не удалось отредактировать трекер")
+        }
+    }
 
+    
 }
