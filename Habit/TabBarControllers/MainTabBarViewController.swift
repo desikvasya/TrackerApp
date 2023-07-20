@@ -30,9 +30,11 @@ final class MainTabBarViewController: UITabBarController {
     // MARK: - Настройка внешнего вида
     private func setupTabBar() {
         tabBar.backgroundColor = UIColor(named: "AnyColor")
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let trackers = TrackersViewController() //первая вкладка "Трекеры"
         trackers.tabBarItem = UITabBarItem(title: NSLocalizedString( "TrackersViewController.title", comment: ""), image: UIImage(systemName: "record.circle.fill"), tag: 0)
-        let statistics = StatisticsViewController() //вторая вкладка "Статистика"
+        let statistics = StatisticsViewController(statisticsViewModel: appDelegate?.statisticsViewModel ?? StatisticsViewModel()) //вторая вкладка "Статистика"
+        
         statistics.tabBarItem = UITabBarItem(title: NSLocalizedString( "StatisticsViewController.title", comment: ""), image: UIImage(systemName: "hare.fill"), tag: 1)
         viewControllers = [trackers, statistics]
         

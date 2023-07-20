@@ -15,11 +15,12 @@
 /// StatisticsViewController
 "StatisticsViewController.title" = "Статистика";
 "StatisticsViewController.placeholderTitle" = "Анализировать пока нечего";
+"StatisticsViewController.trackersCompleted" = "Трекеров завершено";
 
 //  OnboardingViewController
 "OnboardingViewController.button" = "Вот это технологии!";
 "onboarding.message1" = "Отслеживайте только то, что хотите";
-"onboarding.message2" = "Даже если это\\nне литры воды и йога";
+"onboarding.message2" = "Даже если это\nне литры воды и йога";
 
 //  TrackerTypeViewController
 "TrackerTypeViewController.title" = "Создание трекера";

@@ -37,6 +37,9 @@
 		924FB1D22A3EBAAF007C3B13 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 924FB1D02A3EBAAF007C3B13 /* DataModel.xcdatamodeld */; };
 		925F02C02A6668AF005A1641 /* HabitTests1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F02BF2A6668AF005A1641 /* HabitTests1.swift */; };
 		925F02C82A6668CC005A1641 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 925F02C72A6668CC005A1641 /* SnapshotTesting */; };
+		925F02CA2A68E122005A1641 /* StatisticsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F02C92A68E122005A1641 /* StatisticsCell.swift */; };
+		925F02CC2A68E1E9005A1641 /* StatisticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F02CB2A68E1E9005A1641 /* StatisticsStore.swift */; };
+		925F02CE2A68E258005A1641 /* StatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925F02CD2A68E258005A1641 /* StatisticsViewModel.swift */; };
 		926917CB2A5D0DA100B96F30 /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926917CA2A5D0DA100B96F30 /* CategoryViewModel.swift */; };
 		926917CD2A5D177600B96F30 /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926917CC2A5D177600B96F30 /* NewCategoryViewController.swift */; };
 		92D059602A395E2000E9D00F /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D0595F2A395E2000E9D00F /* TrackerStore.swift */; };
@@ -90,6 +93,9 @@
 		924FB1D12A3EBAAF007C3B13 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		925F02BD2A6668AF005A1641 /* HabitTests1.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HabitTests1.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		925F02BF2A6668AF005A1641 /* HabitTests1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitTests1.swift; sourceTree = "<group>"; };
+		925F02C92A68E122005A1641 /* StatisticsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCell.swift; sourceTree = "<group>"; };
+		925F02CB2A68E1E9005A1641 /* StatisticsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsStore.swift; sourceTree = "<group>"; };
+		925F02CD2A68E258005A1641 /* StatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewModel.swift; sourceTree = "<group>"; };
 		926917CA2A5D0DA100B96F30 /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		926917CC2A5D177600B96F30 /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		92D0595F2A395E2000E9D00F /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
@@ -186,6 +192,7 @@
 				922B97FE2A25CA790094F7AE /* CategoryCell.swift */,
 				922B98042A25CEBA0094F7AE /* IrregularCategoryCell.swift */,
 				922B98062A25CFA30094F7AE /* HabitCategoryCell.swift */,
+				925F02C92A68E122005A1641 /* StatisticsCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -262,6 +269,7 @@
 				922B97F12A25BCB20094F7AE /* CategorySelectionViewController.swift */,
 				926917CA2A5D0DA100B96F30 /* CategoryViewModel.swift */,
 				926917CC2A5D177600B96F30 /* NewCategoryViewController.swift */,
+				925F02CD2A68E258005A1641 /* StatisticsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -273,6 +281,7 @@
 				92D059612A395F6400E9D00F /* TrackerCategoryStore.swift */,
 				92D0596A2A39813100E9D00F /* TrackerRecordStore.swift */,
 				92D059682A396AF600E9D00F /* DataProvider.swift */,
+				925F02CB2A68E1E9005A1641 /* StatisticsStore.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -395,6 +404,7 @@
 				922B980A2A26DE310094F7AE /* OnboardingViewController.swift in Sources */,
 				922B98072A25CFA30094F7AE /* HabitCategoryCell.swift in Sources */,
 				926917CD2A5D177600B96F30 /* NewCategoryViewController.swift in Sources */,
+				925F02CC2A68E1E9005A1641 /* StatisticsStore.swift in Sources */,
 				92D059692A396AF600E9D00F /* DataProvider.swift in Sources */,
 				922B98052A25CEBA0094F7AE /* IrregularCategoryCell.swift in Sources */,
 				922B97F62A25BD240094F7AE /* ScheduleCell.swift in Sources */,
@@ -412,7 +422,9 @@
 				922B97DA2A2475C00094F7AE /* CollectionHeaderSupplementaryView.swift in Sources */,
 				922B97F42A25BCC30094F7AE /* ScheduleSelectionViewController.swift in Sources */,
 				924FB1A42A3AEAA0007C3B13 /* UIColorExtension.swift in Sources */,
+				925F02CE2A68E258005A1641 /* StatisticsViewModel.swift in Sources */,
 				92D0596B2A39813100E9D00F /* TrackerRecordStore.swift in Sources */,
+				925F02CA2A68E122005A1641 /* StatisticsCell.swift in Sources */,
 				922B97EC2A25B6710094F7AE /* EmojiCell.swift in Sources */,
 				922B97DD2A2475C00094F7AE /* StatisticsViewController.swift in Sources */,
 				922B97FB2A25C7990094F7AE /* TrackerCell.swift in Sources */,
