@@ -61,7 +61,6 @@ final class NewCategoryViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    /// Настройка внешнего вида
     private func setupView() {
         view.backgroundColor = .white
         NSLayoutConstraint.activate([

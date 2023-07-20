@@ -130,7 +130,7 @@ final class NewHabitViewController: UIViewController {
         super.viewDidLoad()
         setupProperties()
         setupView()
-
+        
         if let event = eventToEdit {
             setupEdit(with: event)
         }
@@ -204,29 +204,29 @@ final class NewHabitViewController: UIViewController {
     }
     
     // MARK: - Редактирование привычки
-
+    
     private func setupEdit(with event: Event) {
         titleLabel.text = NSLocalizedString("NewHabitViewController.editTitle", comment: "")
         enterNameTextField.text = event.name
         categoryViewModel.didChooseCategory(name: categoryToEdit ?? "")
-
+        
         if let emojiIndex = emojiCollectionData.firstIndex(of: event.emoji) {
             let indexPath = IndexPath(row: emojiIndex, section: 0)
             if emojiIndex < emojiCollection.numberOfItems(inSection: 0) {
                 emojiCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
             }
         }
-
+        
         if let colorIndex = colorCollectionData.firstIndex(where: { $0 == event.color }) {
             let indexPath = IndexPath(row: colorIndex, section: 0)
             if colorIndex < colorCollection.numberOfItems(inSection: 0) {
                 colorCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
             }
         }
-
+        
         activateButton()
     }
-
+    
     
     // MARK: - Методы, вызываемые при нажатии кнопок
     // MARK: Метод, вызываемый при нажатии на кнопку "Отмена"
@@ -266,7 +266,7 @@ final class NewHabitViewController: UIViewController {
         selectedDays = []
         shortSelectedDays = []
     }
-
+    
     
     // MARK: Метод, меняющий первую строку таблицы ("категория") при срабатывании нотификации
     @objc

@@ -57,12 +57,12 @@ final class ScheduleCell: UITableViewCell {
             selectedDays.append(title.text ?? "")
             switch title.text {
             case dayOfWeek.monday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.monday", comment: "ПН"))
-             case dayOfWeek.tuesday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.tuesday", comment: "ВТ"))
-             case dayOfWeek.wednesday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.wednesday", comment: "СР"))
-             case dayOfWeek.thursday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.thursday", comment: "ЧТ"))
-             case dayOfWeek.friday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.friday", comment: "ПТ"))
-             case dayOfWeek.saturday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.saturday", comment: "СБ"))
-             case dayOfWeek.sunday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.sunday", comment: "ВС"))
+            case dayOfWeek.tuesday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.tuesday", comment: "ВТ"))
+            case dayOfWeek.wednesday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.wednesday", comment: "СР"))
+            case dayOfWeek.thursday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.thursday", comment: "ЧТ"))
+            case dayOfWeek.friday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.friday", comment: "ПТ"))
+            case dayOfWeek.saturday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.saturday", comment: "СБ"))
+            case dayOfWeek.sunday.localizedString: shortSelectedDays.append(NSLocalizedString("ShortName.sunday", comment: "ВС"))
             case .none:
                 return
             case .some(_):

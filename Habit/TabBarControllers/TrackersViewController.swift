@@ -462,8 +462,8 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                     self?.present(showEditView, animated: true, completion: nil)
                 }
             }
-
-
+            
+            
             let deleteAction = UIAction(
                 title: NSLocalizedString("Touch.delete", comment: ""),
                 image: nil

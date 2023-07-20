@@ -49,33 +49,31 @@ final class TrackerStore {
     }
     
     // MARK: - методы закрепления/открепления трекеров
-
+    
     func pinEvent(oldCategory: String, id: UUID, context: NSManagedObjectContext) {
         let pinnedTrackerRequest = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
         pinnedTrackerRequest.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
-
+        
         do {
             let existingPinnedTracker = try context.fetch(pinnedTrackerRequest).first
-
+            
             if existingPinnedTracker != nil {
                 return
             }
-
+            
             let newPinnedTracker = PinnedTrackers(context: context)
             newPinnedTracker.pinnedTrackerID = id
             newPinnedTracker.pinnedTrackerCategory = oldCategory
-
+            
             let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
             eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
-
+            
             do {
                 let event = try context.fetch(eventRequest).first
                 let categoryRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
                 categoryRequest.predicate = NSPredicate(format: "name == %@", "Закреплённые")
                 let category = try context.fetch(categoryRequest).first ?? TrackerCategoryCoreData(context: context)
                 category.name = "Закреплённые"
-//                category.name = NSLocalizedString("TrackersViewController.pinned", comment: "")
-
                 event?.category = category
                 try context.save()
             } catch {
@@ -85,7 +83,7 @@ final class TrackerStore {
             print("Не удалось проверить закрепление трекера")
         }
     }
-
+    
     func unpinEvent(id: UUID, context: NSManagedObjectContext) -> String {
         let request = NSFetchRequest<PinnedTrackers>(entityName: "PinnedTrackers")
         request.predicate = NSPredicate(format: "pinnedTrackerID == %@", id.uuidString)
@@ -119,8 +117,8 @@ final class TrackerStore {
         return false
     }
     
-//     Метод редактирования трекера
-
+    //     Метод редактирования трекера
+    
     func editEvent(id: UUID, event: Event, category: String, context: NSManagedObjectContext) {
         let eventRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         eventRequest.predicate = NSPredicate(format: "trackerID == %@", id.uuidString)
@@ -147,6 +145,4 @@ final class TrackerStore {
             print("Не удалось отредактировать трекер")
         }
     }
-
-    
 }

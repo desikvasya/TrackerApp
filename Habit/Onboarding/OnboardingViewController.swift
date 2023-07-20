@@ -15,7 +15,6 @@ final class OnboardingViewController: UIPageViewController {
         (text: NSLocalizedString("onboarding.message1", comment: ""), image: "onboarding1"),
         (text: NSLocalizedString("onboarding.message2", comment: ""), image: "onboarding2")
     ]
-
     
     private var isSwitchingPages = false
     private var selectedPage: Int? {

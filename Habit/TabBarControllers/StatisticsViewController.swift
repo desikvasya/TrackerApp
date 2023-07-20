@@ -5,106 +5,16 @@
 //  Created by Denis on 29.05.2023.
 //
 
-//import UIKit
-//
-//final class StatisticsViewController: UIViewController {
-//    private var containerView: UIView!
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        setupNavBar()
-//        addPlaceholder()
-//    }
-//
-//    // MARK: - Components
-//
-//    private lazy var placeholderView: UIView = {
-//        let message = NSLocalizedString("StatisticsViewController.placeholderTitle", comment: "")
-//        let imageName = "statsPlaceholder"
-//        guard let image = UIImage(named: imageName) else {
-//            fatalError("Failed to load image: \(imageName)")
-//        }
-//
-//        return UIView.placeholderView(message: message, image: image)
-//    }()
-//
-//    // MARK: - Appearance
-//
-//    private func addPlaceholder() {
-//        view.backgroundColor = UIColor(named: "AnyColor")
-//        view.addSubview(placeholderView)
-//
-//        let safeArea = view.safeAreaLayoutGuide
-//
-//        NSLayoutConstraint.activate([
-//            placeholderView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-//            placeholderView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor)
-//        ])
-//    }
-//
-//    private func setupNavBar() {
-//        if let navigationBar = navigationController?.navigationBar {
-//            var attributes = navigationBar.titleTextAttributes ?? [:]
-//            let boldFont = UIFont.boldSystemFont(ofSize: 34)
-//            attributes[NSAttributedString.Key.font] = boldFont
-//            navigationBar.titleTextAttributes = attributes
-//
-//            let titleLabel = UILabel()
-//            titleLabel.text = NSLocalizedString( "StatisticsViewController.title", comment: "")
-//            titleLabel.font = boldFont
-//            titleLabel.textColor = UIColor(named: "PlusColor")
-//            titleLabel.sizeToFit()
-//
-//            let containerView = UIView()
-//            containerView.addSubview(titleLabel)
-//
-//            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-//
-//            NSLayoutConstraint.activate([
-//                titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-//                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 28)
-//            ])
-//
-//            let leftBarItem = UIBarButtonItem(customView: containerView)
-//            navigationItem.leftBarButtonItem = leftBarItem
-//        }
-//    }
-//}
-//
-//extension UIView {
-//    static func placeholderView(message: String, image: UIImage) -> UIView {
-//        let label = UILabel()
-//        label.font = .systemFont(ofSize: 12)
-//        label.text = message
-//        label.numberOfLines = 0
-//        label.textAlignment = .center
-//
-//        let imageView = UIImageView(image: image)
-//
-//        let vStack = UIStackView()
-//        vStack.axis = .vertical
-//        vStack.spacing = 8
-//        vStack.alignment = .center
-//
-//        vStack.addArrangedSubview(imageView)
-//        vStack.addArrangedSubview(label)
-//
-//        vStack.translatesAutoresizingMaskIntoConstraints = false
-//
-//        return vStack
-//    }
-//}
-
 import UIKit
 
 final class StatisticsViewController: UIViewController {
-
+    
     // MARK: - Свойства
-
+    
     var statisticsViewModel: StatisticsViewModel
-
+    
     var statisticsNumber = 0
-
+    
     let statisticsLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("StatisticsViewController.title", comment: "")
@@ -112,13 +22,13 @@ final class StatisticsViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     let faceImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "statsPlaceholder"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-
+    
     let questionLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("StatisticsViewController.placeholderTitle", comment: "")
@@ -126,7 +36,7 @@ final class StatisticsViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 12)
         return label
     }()
-
+    
     let stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -136,7 +46,7 @@ final class StatisticsViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
+    
     let statisticsTable: UITableView = {
         let table = UITableView()
         table.register(StatisticsCell.self, forCellReuseIdentifier: "statisticsCell")
@@ -146,7 +56,7 @@ final class StatisticsViewController: UIViewController {
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
-
+    
     // MARK: - Методы
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,17 +64,16 @@ final class StatisticsViewController: UIViewController {
         bind()
         setupView()
     }
-
+    
     init(statisticsViewModel: StatisticsViewModel) {
         self.statisticsViewModel = statisticsViewModel
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    // Настройка внешнего вида
+    
     private func setupView() {
         view.backgroundColor = .white
         NSLayoutConstraint.activate([
@@ -179,8 +88,7 @@ final class StatisticsViewController: UIViewController {
         ])
         showStatistics()
     }
-
-    // Настройка свойств
+    
     private func setupProperties() {
         NotificationCenter.default.addObserver(self, selector: #selector(showStatistics), name: Notification.Name("plus_tapped"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showStatistics), name: Notification.Name("tracker_deleted"), object: nil)
@@ -192,8 +100,7 @@ final class StatisticsViewController: UIViewController {
         statisticsTable.dataSource = self
         statisticsTable.delegate = self
     }
-
-    // Биндинг
+    
     private func bind() {
         statisticsViewModel.isStatisticScreenShouldUpdate = { result in
             if result.endedTracks > 0 {
@@ -209,35 +116,35 @@ final class StatisticsViewController: UIViewController {
             }
         }
     }
-
+    
     @objc
     private func showStatistics() {
         statisticsViewModel.getStatistics()
     }
-
+    
 }
 
 // MARK: - Расширение для UITableViewDataSource
 extension StatisticsViewController: UITableViewDataSource {
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "statisticsCell", for: indexPath)
         guard let statisticsCell = cell as? StatisticsCell else { return UITableViewCell() }
         statisticsCell.numberLabel.text = "\(statisticsNumber)"
         return statisticsCell
     }
-
+    
 }
 
 // MARK: - Расширение для UITableViewDelegate
 extension StatisticsViewController: UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 90
     }
-
+    
 }

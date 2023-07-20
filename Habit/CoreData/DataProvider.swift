@@ -55,7 +55,7 @@ final class DataProvider: NSObject {
     }
     
     // MARK: - Методы, закрепления/ открепления трекера
-
+    
     func pinEvent(oldCategory: String, id: UUID) {
         trackerStore.pinEvent(oldCategory: oldCategory, id: id, context: context)
     }
