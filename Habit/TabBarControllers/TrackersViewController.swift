@@ -14,6 +14,8 @@ protocol TrackersViewControllerProtocol {
 
 class TrackersViewController: UIViewController {
     
+    let analyticsService = AnalyticsService()
+    
     // MARK: - Свойства
     var choosenDay = "" // день в формате "понедельник"
     
@@ -237,8 +239,10 @@ class TrackersViewController: UIViewController {
     // MARK: - Метод, вызываемый при нажатии на "+"
     @objc
     private func plusTapped() {
+        analyticsService.report(event: "TAP_ON_ADDBUTTON", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "add_track"])
         let selecterTrackerVC = TrackerTypeViewController()
         show(selecterTrackerVC, sender: self)
+        analyticsService.report(event: "CLOSE_TRACKERSSCREEN", params: ["event" : "close", "screen" : "TrackersViewController"])
     }
     
     // MARK: - Метод, добавляющий коллекцию трекеров на экран и убирающий заглушку
@@ -437,28 +441,9 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 }
             }
             
-            
-//            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) { [weak self] _ in
-//                guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
-//                      let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],
-//                      let oldCategory = self?.localTrackers[indexPath.section].label else {
-//                    return
-//                }
-//
-//                if eventToEdit.day == nil {
-//                    let showEditView = NewIrregularEventViewController(categoryViewModel: CategoryViewModel())
-//                    showEditView.eventToEdit = eventToEdit
-//                    showEditView.categoryToEdit = oldCategory
-//                    self?.present(showEditView, animated: true, completion: nil)
-//                } else {
-//                    let showEditView = NewHabitViewController(categoryViewModel: CategoryViewModel())
-//                    showEditView.eventToEdit = eventToEdit
-//                    showEditView.categoryToEdit = oldCategory
-//                    self?.present(showEditView, animated: true, completion: nil)
-//                }
-//            }
-            
-            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) { [weak self] _ in
+            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) {
+                [weak self] _ in
+                self?.analyticsService.report(event: "EDIT_TRACKER", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "edit"])
                 guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
                       let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],
                       let oldCategory = self?.localTrackers[indexPath.section].label else {
@@ -483,6 +468,7 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 title: NSLocalizedString("Touch.delete", comment: ""),
                 image: nil
             ) { [weak self] _ in
+                self?.analyticsService.report(event: "DELETE_TRACKER", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "delete"])
                 let alertController = UIAlertController(title: "", message: NSLocalizedString("Alert.message", comment: ""), preferredStyle: .actionSheet)
                 let deleteAction = UIAlertAction(title: NSLocalizedString("Alert.delete", comment: ""), style: .destructive) { (_) in
                     self?.dataProvider.deleteTracker(id: tappedID)
