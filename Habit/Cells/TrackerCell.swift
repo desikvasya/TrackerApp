@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackerCell: UICollectionViewCell {
     
+    let analyticsService = AnalyticsService()
+    
     // MARK: - Свойства
     var delegate: TrackersViewControllerProtocol?
     
@@ -119,5 +121,6 @@ final class TrackerCell: UICollectionViewCell {
         }
         delegate?.saveDoneEvent(id: tappedID, index: indexPath)
         collectionView.reloadData()
+        self.analyticsService.report(event: "TRACKED", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "track"])
     }
 }

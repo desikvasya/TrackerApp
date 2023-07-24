@@ -399,7 +399,7 @@ extension TrackersViewController {
     }
 }
 
-// MARK: - Расширение для UIContextMenuInteractionDelegate
+// MARK: - UIContextMenuInteractionDelegate
 extension TrackersViewController: UIContextMenuInteractionDelegate {
     
     func contextMenuInteraction(
@@ -441,8 +441,10 @@ extension TrackersViewController: UIContextMenuInteractionDelegate {
                 }
             }
             
-            let editAction = UIAction(title: NSLocalizedString("Touch.edit", comment: ""), image: nil) {
-                [weak self] _ in
+                let editAction = UIAction(
+                       title: NSLocalizedString("Touch.edit", comment: ""),
+                       image: nil
+                ) { [weak self] _ in
                 self?.analyticsService.report(event: "EDIT_TRACKER", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "edit"])
                 guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
                       let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],

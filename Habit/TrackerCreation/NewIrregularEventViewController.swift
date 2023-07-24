@@ -175,10 +175,6 @@ final class NewIrregularEventViewController: UIViewController {
             secondStack.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
             secondStack.topAnchor.constraint(equalTo: colorCollection.bottomAnchor, constant: 24),
         ])
-        //        if eventToEdit != nil {
-        //            setupEdit(with: eventToEdit!)
-        //        }
-        
         colorCollection.delegate = self
         colorCollection.dataSource = self
         emojiCollection.delegate = self
@@ -222,20 +218,21 @@ final class NewIrregularEventViewController: UIViewController {
     }
     
     
-    // MARK: - Методы, вызываемые при нажатии кнопок
-    // MARK: Метод, вызываемый при нажатии на кнопку "Отмена"
+    // MARK: - Private methods
+    
+    // Метод, вызываемый при нажатии на кнопку "Отмена"
     @objc
     private func cancel() {
         dismiss(animated: true)
     }
     
-    // MARK: Метод, прячущий клавиатуру при нажатии вне её области
+    // Метод, прячущий клавиатуру при нажатии вне её области
     @objc
     func dismissKeyboard() {
         enterNameTextField.resignFirstResponder()
     }
     
-    // MARK: Метод, вызываемый при нажатии на кнопку "Создать"
+    // Метод, вызываемый при нажатии на кнопку "Создать"
     
     @objc private func create() {
         let name = enterNameTextField.text ?? ""
