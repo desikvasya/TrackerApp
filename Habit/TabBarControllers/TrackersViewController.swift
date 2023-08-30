@@ -14,6 +14,8 @@ protocol TrackersViewControllerProtocol {
 
 class TrackersViewController: UIViewController {
     
+    let analyticsService = AnalyticsService()
+    
     // MARK: - Свойства
     var choosenDay = "" // день в формате "понедельник"
     
@@ -37,13 +39,14 @@ class TrackersViewController: UIViewController {
             return layout
         }()
         collection.collectionViewLayout = layout
+        collection.backgroundColor = UIColor(named: "AnyColor")
         return collection
     }()
     
     let plusButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 0, y: 0, width: 19, height: 18))
         button.setImage(UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)), for: .normal)
-        button.tintColor = .black
+        button.tintColor = UIColor(named: "PlusColor")
         button.addTarget(nil, action: #selector(plusTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -51,7 +54,7 @@ class TrackersViewController: UIViewController {
     
     let trackersLabel: UILabel = {
         let label = UILabel()
-        label.text = "Трекеры"
+        label.text = NSLocalizedString("TrackersViewController.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -64,7 +67,7 @@ class TrackersViewController: UIViewController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.calendar = Calendar(identifier: .iso8601)
         datePicker.maximumDate = Date()
-        datePicker.locale = Locale(identifier: "ru_RU")
+        datePicker.locale = Locale.current
         datePicker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
         return datePicker
     }()
@@ -77,7 +80,7 @@ class TrackersViewController: UIViewController {
     
     let questionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("TrackersViewController.whatWouldYouLikeToTrack", comment: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 12)
         return label
@@ -95,7 +98,7 @@ class TrackersViewController: UIViewController {
     
     let searchBar: UISearchBar = {
         let search = UISearchBar()
-        search.placeholder = "Поиск"
+        search.placeholder = NSLocalizedString("TrackersViewController.searchBar", comment: "")
         search.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         search.translatesAutoresizingMaskIntoConstraints = false
         return search
@@ -121,7 +124,7 @@ class TrackersViewController: UIViewController {
     // MARK: - Настройка внешнего вида
     private func setupView() {
         datePickerValueChanged(sender: datePicker)
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(named: "AnyColor")
         NSLayoutConstraint.activate([
             plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 13),
             plusButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -147,6 +150,8 @@ class TrackersViewController: UIViewController {
             stackView.isHidden = true
             trackersCollection.isHidden = false
         }
+        let contextMenuInteraction = UIContextMenuInteraction(delegate: self)
+        trackersCollection.addInteraction(contextMenuInteraction)
     }
     
     // MARK: - Настройка свойств, жестов и нотификаций
@@ -211,6 +216,17 @@ class TrackersViewController: UIViewController {
         trackersCollection.reloadData()
     }
     
+    // MARK: - Метод, вызываемый при удержании ячейки
+    
+    @objc
+    func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: trackersCollection)
+        if let indexPath = trackersCollection.indexPathForItem(at: touchPoint) {
+            let interaction = UIContextMenuInteraction(delegate: self)
+            let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell
+            cell?.viewBackground.addInteraction(interaction)        }
+    }
+    
     // MARK: - Метод, вызываемый когда меняется дата в Date Picker
     @objc
     func datePickerValueChanged(sender: UIDatePicker) {
@@ -223,8 +239,10 @@ class TrackersViewController: UIViewController {
     // MARK: - Метод, вызываемый при нажатии на "+"
     @objc
     private func plusTapped() {
+        analyticsService.report(event: "TAP_ON_ADDBUTTON", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "add_track"])
         let selecterTrackerVC = TrackerTypeViewController()
         show(selecterTrackerVC, sender: self)
+        analyticsService.report(event: "CLOSE_TRACKERSSCREEN", params: ["event" : "close", "screen" : "TrackersViewController"])
     }
     
     // MARK: - Метод, добавляющий коллекцию трекеров на экран и убирающий заглушку
@@ -264,7 +282,13 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell?.emoji.text = localTrackers[indexPath.section].trackers[indexPath.row].emoji
         cell?.name.text = localTrackers[indexPath.section].trackers[indexPath.row].name
         cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color
-        cell?.quantity.text = "\(trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).count) дней"
+        
+        let completedDays = trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).count
+        
+        let completedDaysString = String.localizedStringWithFormat(NSLocalizedString("days", comment: ""), completedDays)
+        
+        cell?.quantity.text = completedDaysString
+        
         makeDate(dateFormat: "yyyy/MM/dd")
         if trackerRecords.filter({$0.id == localTrackers[indexPath.section].trackers[indexPath.row].id}).contains(where: {$0.day == dateString}) {
             cell?.plusButton.backgroundColor = localTrackers[indexPath.section].trackers[indexPath.row].color.withAlphaComponent(0.5)
@@ -372,5 +396,129 @@ extension TrackersViewController {
         } else if dateFormat == "yyyy/MM/dd" {
             dateString = dateFormatterString
         }
+    }
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+extension TrackersViewController: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        configurationForMenuAtLocation location: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: location) else {
+            return nil
+        }
+        
+        let tappedID = localTrackers[indexPath.section].trackers[indexPath.row].id
+        let oldCategory = localTrackers[indexPath.section].label
+        let eventToPin = localTrackers[indexPath.section].trackers[indexPath.row]
+        
+        let configuration = UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { [weak self] _ in
+            let pinnedCategory = NSLocalizedString("TrackersViewController.pinned", comment: "Закреплённые")
+            
+            let trimmedOldCategory = oldCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedPinnedCategory = pinnedCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            let isPinned = self?.dataProvider.isTrackerPinned(id: tappedID) ?? false
+            let pinActionTitle = isPinned ? NSLocalizedString("Touch.unpin", comment: "") : NSLocalizedString("Touch.pin", comment: "")
+            
+            let pinAction = UIAction(
+                title: pinActionTitle,
+                image: nil
+            ) { [weak self] _ in
+                if isPinned {
+                    // Unpin the event
+                    self?.dataProvider.unpinEvent(id: tappedID)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                } else {
+                    // Pin the event
+                    self?.dataProvider.pinEvent(oldCategory: oldCategory, id: eventToPin.id)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                }
+            }
+            
+                let editAction = UIAction(
+                       title: NSLocalizedString("Touch.edit", comment: ""),
+                       image: nil
+                ) { [weak self] _ in
+                self?.analyticsService.report(event: "EDIT_TRACKER", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "edit"])
+                guard let indexPath = self?.trackersCollection.indexPathForItem(at: location),
+                      let eventToEdit = self?.localTrackers[indexPath.section].trackers[indexPath.row],
+                      let oldCategory = self?.localTrackers[indexPath.section].label else {
+                    return
+                }
+                
+                if eventToEdit.day == nil {
+                    let showEditView = NewIrregularEventViewController(categoryViewModel: CategoryViewModel())
+                    showEditView.eventToEdit = eventToEdit
+                    showEditView.categoryToEdit = oldCategory
+                    self?.present(showEditView, animated: true, completion: nil)
+                } else {
+                    let showEditView = NewHabitViewController(categoryViewModel: CategoryViewModel())
+                    showEditView.eventToEdit = eventToEdit
+                    showEditView.categoryToEdit = oldCategory
+                    self?.present(showEditView, animated: true, completion: nil)
+                }
+            }
+            
+            
+            let deleteAction = UIAction(
+                title: NSLocalizedString("Touch.delete", comment: ""),
+                image: nil
+            ) { [weak self] _ in
+                self?.analyticsService.report(event: "DELETE_TRACKER", params: ["event" : "click", "screen" : "TrackersViewController", "item" : "delete"])
+                let alertController = UIAlertController(title: "", message: NSLocalizedString("Alert.message", comment: ""), preferredStyle: .actionSheet)
+                let deleteAction = UIAlertAction(title: NSLocalizedString("Alert.delete", comment: ""), style: .destructive) { (_) in
+                    self?.dataProvider.deleteTracker(id: tappedID)
+                    self?.datePickerValueChanged(sender: self?.datePicker ?? UIDatePicker())
+                }
+                let cancelAction = UIAlertAction(title: NSLocalizedString("Alert.cancel", comment: ""), style: .cancel, handler: nil)
+                alertController.addAction(deleteAction)
+                alertController.addAction(cancelAction)
+                self?.present(alertController, animated: true, completion: nil)
+            }
+            deleteAction.attributes = .destructive
+            
+            
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
+        
+        return configuration
+    }
+    
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: interaction.location(in: trackersCollection)),
+              let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell else {
+            return nil
+        }
+        
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
+        
+        let targetedPreview = UITargetedPreview(view: cell.viewBackground, parameters: parameters)
+        return targetedPreview
+    }
+    
+    func contextMenuInteraction(
+        _ interaction: UIContextMenuInteraction,
+        previewForDismissingMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard let indexPath = trackersCollection.indexPathForItem(at: interaction.location(in: trackersCollection)),
+              let cell = trackersCollection.cellForItem(at: indexPath) as? TrackerCell else {
+            return nil
+        }
+        
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
+        
+        let targetedPreview = UITargetedPreview(view: cell.viewBackground, parameters: parameters)
+        return targetedPreview
     }
 }

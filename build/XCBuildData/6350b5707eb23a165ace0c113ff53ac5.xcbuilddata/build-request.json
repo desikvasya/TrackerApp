@@ -1,0 +1,46 @@
+{
+  "buildCommand" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : false,
+    "targets" : null
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e984e2cc2c36d98fc272dbc49bca2a9f42c"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98683e858c0a1652171dae8182740fe635"
+    }
+  ],
+  "containerPath" : "/Users/denis/TrackerApp/Pods/Pods.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "",
+      "buildProductsPath" : "",
+      "derivedDataPath" : "/Users/denis/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/denis/Library/Developer/Xcode/DerivedData/Pods-hkjzenhzadlidhawdoviybzsnszb/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/denis/Library/Developer/Xcode/DerivedData/Pods-hkjzenhzadlidhawdoviybzsnszb/Index.noindex/PrecompiledHeaders",
+      "pchPath" : ""
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}

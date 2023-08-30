@@ -11,10 +11,15 @@ final class NewIrregularEventViewController: UIViewController {
     
     let dataProvider = DataProvider()
     
+    var eventToEdit: Event?
+    var categoryToEdit: String?
+    
     private let categoryViewModel: CategoryViewModel
     
     init(categoryViewModel: CategoryViewModel) {
         self.categoryViewModel = categoryViewModel
+        self.eventToEdit = nil
+        self.categoryToEdit = nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,7 +46,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Новое нерегулярное событие"
+        label.text = NSLocalizedString("NewIrregularEventViewController.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -49,7 +54,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     private let enterNameTextField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название трекера"
+        field.placeholder = NSLocalizedString("NewIrregularEventViewController.placeholder", comment: "")
         field.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 0.3)
         field.layer.cornerRadius = 16
         field.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +84,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     private let cancelButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("NewIrregularEventViewController.cancelButton", comment: ""), for: .normal)
         button.setTitleColor(UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1), for: .normal)
         button.layer.borderColor = UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1).cgColor
         button.layer.borderWidth = 1
@@ -91,7 +96,7 @@ final class NewIrregularEventViewController: UIViewController {
     
     private let createButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(NSLocalizedString("NewIrregularEventViewController.createButton", comment: ""), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
         button.layer.cornerRadius = 16
@@ -123,6 +128,10 @@ final class NewIrregularEventViewController: UIViewController {
         super.viewDidLoad()
         setupProperties()
         setupView()
+        
+        if let event = eventToEdit {
+            setupEdit(with: event)
+        }
     }
     
     // MARK: - Настройка внешнего вида
@@ -184,30 +193,66 @@ final class NewIrregularEventViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(showCategory), name: Notification.Name("category_changed"), object: nil)
     }
     
-    // MARK: - Методы, вызываемые при нажатии кнопок
-    // MARK: Метод, вызываемый при нажатии на кнопку "Отмена"
+    // MARK: - Редактирование привычки
+    
+    private func setupEdit(with event: Event) {
+        titleLabel.text = NSLocalizedString("NewIrregularEventViewController.editTitle", comment: "")
+        enterNameTextField.text = event.name
+        categoryViewModel.didChooseCategory(name: categoryToEdit ?? "")
+        
+        if let emojiIndex = emojiCollectionData.firstIndex(of: event.emoji) {
+            let indexPath = IndexPath(row: emojiIndex, section: 0)
+            if emojiIndex < emojiCollection.numberOfItems(inSection: 0) {
+                emojiCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+        
+        if let colorIndex = colorCollectionData.firstIndex(where: { $0 == event.color }) {
+            let indexPath = IndexPath(row: colorIndex, section: 0)
+            if colorIndex < colorCollection.numberOfItems(inSection: 0) {
+                colorCollection.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+            }
+        }
+        
+        activateButton()
+    }
+    
+    
+    // MARK: - Private methods
+    
+    // Метод, вызываемый при нажатии на кнопку "Отмена"
     @objc
     private func cancel() {
         dismiss(animated: true)
     }
     
-    // MARK: Метод, прячущий клавиатуру при нажатии вне её области
+    // Метод, прячущий клавиатуру при нажатии вне её области
     @objc
     func dismissKeyboard() {
         enterNameTextField.resignFirstResponder()
     }
     
-    // MARK: Метод, вызываемый при нажатии на кнопку "Создать"
-    @objc
-    private func create() {
+    // Метод, вызываемый при нажатии на кнопку "Создать"
+    
+    @objc private func create() {
         let name = enterNameTextField.text ?? ""
         let category = categoryViewModel.chosenCategory
         let emojiIndex = emojiCollection.indexPathsForSelectedItems?.first
         let emoji = emojiCollectionData[emojiIndex?.row ?? 0]
         let colorIndex = colorCollection.indexPathsForSelectedItems?.first
         let color = colorCollectionData[colorIndex?.row ?? 0]
-        let event = Event(name: name, emoji: emoji, color: color, day: nil)
         
+        if var eventToEdit = eventToEdit {
+            // Edit existing tracker
+            eventToEdit.name = name
+            eventToEdit.emoji = emoji
+            eventToEdit.color = color
+            dataProvider.editEvent(id: eventToEdit.id, event: eventToEdit, category: category)
+        } else {
+            // Create new tracker
+            let event = Event(name: name, emoji: emoji, color: color, day: nil)
+            dataProvider.addTracker(event: event, category: category)
+        }
         
         let tabBar = MainTabBarViewController()
         tabBar.modalPresentationStyle = .fullScreen
@@ -215,14 +260,17 @@ final class NewIrregularEventViewController: UIViewController {
         present(tabBar, animated: true)
         
         categoryViewModel.didChooseCategory(name: "")
-        dataProvider.addTracker(event: event, category: category)
     }
     
+    
     private func activateButton() {
-        if enterNameTextField.hasText && !categoryViewModel.chosenCategory.isEmpty && !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? false) && !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? false) {
-            createButton.backgroundColor = .black
-            createButton.isEnabled = true
-        }
+        let nameIsEmpty = enterNameTextField.text?.isEmpty ?? true
+        let categoryIsEmpty = categoryViewModel.chosenCategory.isEmpty
+        let emojiIsSelected = !(emojiCollection.indexPathsForSelectedItems?.isEmpty ?? true)
+        let colorIsSelected = !(colorCollection.indexPathsForSelectedItems?.isEmpty ?? true)
+        
+        createButton.isEnabled = !nameIsEmpty && !categoryIsEmpty && emojiIsSelected && colorIsSelected
+        createButton.backgroundColor = createButton.isEnabled ? .black : UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
     }
     
     // MARK: Метод, обновлящий название выбранной категории при срабатывании нотификации
@@ -245,8 +293,10 @@ extension NewIrregularEventViewController: UITextFieldDelegate {
     
     // MARK: Метод, используемый для проверки наличия текста в UITextField
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField.hasText {
+        if let text = textField.text, let textRange = Range(range, in: text) {
+            let updatedText = text.replacingCharacters(in: textRange, with: string)
             activateButton()
+            return !updatedText.isEmpty
         }
         return true
     }
@@ -272,12 +322,25 @@ extension NewIrregularEventViewController: UICollectionViewDataSource {
                 fatalError("Unable to dequeue ColorCell")
             }
             cell.color.backgroundColor = colorCollectionData[indexPath.row]
+            if let eventColor = eventToEdit?.color, let cellColor = cell.color.backgroundColor,
+               UIColor.hexString(from: cellColor) == UIColor.hexString(from: eventColor) {
+                cell.layer.borderWidth = 3
+                cell.layer.borderColor = cell.color.backgroundColor?.cgColor.copy(alpha: 0.3)
+                cell.layer.cornerRadius = 8
+                cell.layer.masksToBounds = true
+            }
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emojiCell", for: indexPath) as? EmojiCell else {
                 fatalError("Unable to dequeue EmojiCell")
             }
             cell.emojiLabel.text = emojiCollectionData[indexPath.row]
+            if cell.emojiLabel.text == eventToEdit?.emoji {
+                cell.isSelected = true
+                cell.backgroundColor = UIColor(red: 0.902, green: 0.91, blue: 0.922, alpha: 1)
+                cell.layer.cornerRadius = 16
+                cell.layer.masksToBounds = true
+            }
             return cell
         }
     }
@@ -288,13 +351,13 @@ extension NewIrregularEventViewController: UICollectionViewDataSource {
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
                 fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
             }
-            header.title.text = "Цвет"
+            header.title.text = NSLocalizedString("NewIrregularEventViewController.colorHeader", comment: "")
             return header
         } else {
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as? CollectionHeaderSupplementaryView else {
                 fatalError("Unable to dequeue CollectionHeaderSupplementaryView")
             }
-            header.title.text = "Emoji"
+            header.title.text = NSLocalizedString("NewIrregularEventViewController.emojiHeader", comment: "")
             return header
         }
     }
@@ -373,6 +436,7 @@ extension NewIrregularEventViewController: UITableViewDataSource {
         guard let categoryCell = cell as? IrregularCategoryCell else {
             return UITableViewCell()
         }
+        categoryCell.title.text = NSLocalizedString("NewIrregularEventViewController.categoryCell.1", comment: "")
         cell.selectionStyle = .none
         categoryCell.categoryName.text = categoryViewModel.chosenCategory
         return categoryCell

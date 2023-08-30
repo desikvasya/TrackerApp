@@ -52,3 +52,14 @@ struct TrackerRecord {
         self.day = day
     }
 }
+
+struct Statistics {
+    
+    // MARK: - Свойства
+    var endedTracks: Int
+    
+    // MARK: - Методы
+    init(endedTracks: Int) {
+        self.endedTracks = endedTracks
+    }
+}

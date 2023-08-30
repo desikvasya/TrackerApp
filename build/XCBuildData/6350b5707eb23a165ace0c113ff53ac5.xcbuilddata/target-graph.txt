@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Pods-Habit in Pods, no dependencies
+Pods-HabitTests1 in Pods, depends on:
+Pods-Habit in Pods (explicit)
